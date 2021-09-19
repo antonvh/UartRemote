@@ -1,0 +1,620 @@
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+dport0_0_seg     0x000000003ff00000 0x0000000000000010
+dram0_0_seg      0x000000003ffe8000 0x0000000000014000
+iram1_0_seg      0x0000000040100000 0x0000000000008000
+irom0_0_seg      0x0000000040210000 0x000000000005c000
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD boot8266.o
+LOAD unaligned_printf.o
+LOAD /home/user/projects/esp8266/esp-open-sdk/xtensa-lx106-elf/lib/gcc/xtensa-lx106-elf/4.8.5/libgcc.a
+                [!provide]                        PROVIDE (_memmap_vecbase_reset, 0x40000000)
+                0x0000000000000110                _memmap_cacheattr_wb_base = 0x110
+                0x0000000000000110                _memmap_cacheattr_wt_base = 0x110
+                0x0000000000000220                _memmap_cacheattr_bp_base = 0x220
+                0x00000000fffff00f                _memmap_cacheattr_unused_mask = 0xfffff00f
+                0x000000002222211f                _memmap_cacheattr_wb_trapnull = 0x2222211f
+                0x000000002222211f                _memmap_cacheattr_wba_trapnull = 0x2222211f
+                0x000000002222211f                _memmap_cacheattr_wbna_trapnull = 0x2222211f
+                0x000000002222211f                _memmap_cacheattr_wt_trapnull = 0x2222211f
+                0x000000002222222f                _memmap_cacheattr_bp_trapnull = 0x2222222f
+                0x00000000fffff11f                _memmap_cacheattr_wb_strict = 0xfffff11f
+                0x00000000fffff11f                _memmap_cacheattr_wt_strict = 0xfffff11f
+                0x00000000fffff22f                _memmap_cacheattr_bp_strict = 0xfffff22f
+                0x0000000022222112                _memmap_cacheattr_wb_allvalid = 0x22222112
+                0x0000000022222112                _memmap_cacheattr_wt_allvalid = 0x22222112
+                0x0000000022222222                _memmap_cacheattr_bp_allvalid = 0x22222222
+                [!provide]                        PROVIDE (_memmap_cacheattr_reset, _memmap_cacheattr_wb_trapnull)
+
+.dport0.rodata  0x000000003ff00000        0x0
+                0x000000003ff00000                _dport0_rodata_start = ABSOLUTE (.)
+ *(.dport0.rodata)
+ *(.dport.rodata)
+                0x000000003ff00000                _dport0_rodata_end = ABSOLUTE (.)
+
+.dport0.literal
+                0x000000003ff00000        0x0
+                0x000000003ff00000                _dport0_literal_start = ABSOLUTE (.)
+ *(.dport0.literal)
+ *(.dport.literal)
+                0x000000003ff00000                _dport0_literal_end = ABSOLUTE (.)
+
+.dport0.data    0x000000003ff00000        0x0
+                0x000000003ff00000                _dport0_data_start = ABSOLUTE (.)
+ *(.dport0.data)
+ *(.dport.data)
+                0x000000003ff00000                _dport0_data_end = ABSOLUTE (.)
+
+.data           0x000000003ffe8000        0x0
+                0x000000003ffe8000                _data_start = ABSOLUTE (.)
+ *(.data)
+ .data          0x000000003ffe8000        0x0 boot8266.o
+ .data          0x000000003ffe8000        0x0 unaligned_printf.o
+ *(.data.*)
+ *(.gnu.linkonce.d.*)
+ *(.data1)
+ *(.sdata)
+ *(.sdata.*)
+ *(.gnu.linkonce.s.*)
+ *(.sdata2)
+ *(.sdata2.*)
+ *(.gnu.linkonce.s2.*)
+ *(.jcr)
+                0x000000003ffe8000                _data_end = ABSOLUTE (.)
+
+.rodata         0x000000003ffe8000        0x0
+                0x000000003ffe8000                _rodata_start = ABSOLUTE (.)
+ *(.sdk.version)
+ *(.gnu.linkonce.r.*)
+ *(.rodata1)
+                0x000000003ffe8000                __XT_EXCEPTION_TABLE__ = ABSOLUTE (.)
+ *(.xt_except_table)
+ *(.gcc_except_table)
+ *(.gnu.linkonce.e.*)
+ *(.gnu.version_r)
+ *(.eh_frame)
+ *crtbegin.o(.ctors)
+ *(EXCLUDE_FILE(*crtend.o) .ctors)
+ *(SORT(.ctors.*))
+ *(.ctors)
+ *crtbegin.o(.dtors)
+ *(EXCLUDE_FILE(*crtend.o) .dtors)
+ *(SORT(.dtors.*))
+ *(.dtors)
+                0x000000003ffe8000                __XT_EXCEPTION_DESCS__ = ABSOLUTE (.)
+ *(.xt_except_desc)
+ *(.gnu.linkonce.h.*)
+                0x000000003ffe8000                __XT_EXCEPTION_DESCS_END__ = ABSOLUTE (.)
+ *(.xt_except_desc_end)
+ *(.dynamic)
+ *(.gnu.version_d)
+                0x000000003ffe8000                . = ALIGN (0x4)
+                0x000000003ffe8000                _bss_table_start = ABSOLUTE (.)
+                0x000000003ffe8000                _bss_table_end = ABSOLUTE (.)
+                0x000000003ffe8000                _rodata_end = ABSOLUTE (.)
+
+.bss            0x000000003ffe8000        0x0
+                0x000000003ffe8000                . = ALIGN (0x8)
+                0x000000003ffe8000                _bss_start = ABSOLUTE (.)
+ *(.dynsbss)
+ *(.sbss)
+ *(.sbss.*)
+ *(.gnu.linkonce.sb.*)
+ *(.scommon)
+ *(.sbss2)
+ *(.sbss2.*)
+ *(.gnu.linkonce.sb2.*)
+ *(.dynbss)
+ *(.bss)
+ .bss           0x000000003ffe8000        0x0 boot8266.o
+ .bss           0x000000003ffe8000        0x0 unaligned_printf.o
+ *(.bss.*)
+ *(.gnu.linkonce.b.*)
+ *(COMMON)
+                0x000000003ffe8000                . = ALIGN (0x8)
+                0x000000003ffe8000                _bss_end = ABSOLUTE (.)
+                0x000000003ffe8000                _heap_start = ABSOLUTE (.)
+
+.irom0.text     0x0000000040210000        0x0
+                0x0000000040210000                _irom0_text_start = ABSOLUTE (.)
+ *libmbedtls.a:(.literal .text .literal.* .text.*)
+ *(.irom0.literal .irom.literal .irom.text.literal .irom0.text .irom.text)
+ *libcrypto.a:(.literal.* .text.*)
+ *libnet80211.a:(.literal.* .text.*)
+ *libwpa.a:(.literal.* .text.*)
+ *libwpa2.a:(.literal.* .text.*)
+                0x0000000040210000                _irom0_text_end = ABSOLUTE (.)
+
+.text           0x0000000040100000      0xfe4
+                0x0000000040100000                _stext = .
+                0x0000000040100000                _text_start = ABSOLUTE (.)
+ *(.UserEnter.text)
+                0x0000000040100000                . = ALIGN (0x10)
+ *(.DebugExceptionVector.text)
+                0x0000000040100000                . = ALIGN (0x10)
+ *(.NMIExceptionVector.text)
+                0x0000000040100000                . = ALIGN (0x10)
+ *(.KernelExceptionVector.text)
+                0x0000000040100000        0x4 LONG 0x0
+                0x0000000040100004        0x4 LONG 0x0
+                0x0000000040100008        0x4 LONG 0x0
+                0x000000004010000c        0x4 LONG 0x0
+                0x0000000040100010                . = ALIGN (0x10)
+ *(.UserExceptionVector.text)
+                0x0000000040100010        0x4 LONG 0x0
+                0x0000000040100014        0x4 LONG 0x0
+                0x0000000040100018        0x4 LONG 0x0
+                0x000000004010001c        0x4 LONG 0x0
+                0x0000000040100020                . = ALIGN (0x10)
+ *(.DoubleExceptionVector.text)
+                0x0000000040100020        0x4 LONG 0x0
+                0x0000000040100024        0x4 LONG 0x0
+                0x0000000040100028        0x4 LONG 0x0
+                0x000000004010002c        0x4 LONG 0x0
+                0x0000000040100030                . = ALIGN (0x10)
+ *(.entry.text)
+ *(.init.literal)
+ *(.init)
+ *(.literal .text .literal.* .text.* .stub .gnu.warning .gnu.linkonce.literal.* .gnu.linkonce.t.*.literal .gnu.linkonce.t.*)
+ .literal.check_buttons
+                0x0000000040100030       0x48 boot8266.o
+                                         0x64 (size before relaxing)
+ .literal.check_main_app
+                0x0000000040100078       0x30 boot8266.o
+                                         0x40 (size before relaxing)
+ .literal.uart_flush
+                0x00000000401000a8        0x8 boot8266.o
+ .literal.start
+                0x00000000401000b0       0x38 boot8266.o
+                                         0x70 (size before relaxing)
+ .literal._printf
+                0x00000000401000e8       0x10 unaligned_printf.o
+                                         0x18 (size before relaxing)
+ .text.check_buttons
+                0x00000000401000f8      0x143 boot8266.o
+                                        0x14f (size before relaxing)
+                0x00000000401000f8                check_buttons
+ *fill*         0x000000004010023b        0x1 ff
+ .text.check_main_app
+                0x000000004010023c       0xf0 boot8266.o
+                                         0xf4 (size before relaxing)
+                0x000000004010023c                check_main_app
+ .text.uart_flush
+                0x000000004010032c       0x45 boot8266.o
+                0x000000004010032c                uart_flush
+ *fill*         0x0000000040100371        0x3 ff
+ .text.start    0x0000000040100374      0x145 boot8266.o
+                                        0x155 (size before relaxing)
+                0x0000000040100374                start
+ *fill*         0x00000000401004b9        0x3 ff
+ .text._printf  0x00000000401004bc       0xaa unaligned_printf.o
+                0x00000000401004bc                _printf
+ .text          0x0000000040100566        0x0 boot8266.o
+ *fill*         0x0000000040100566        0x0 ff
+ *fill*         0x0000000040100566        0x0 ff
+ *fill*         0x0000000040100566        0x0 ff
+ .text          0x0000000040100566        0x0 unaligned_printf.o
+ *(.fini.literal)
+ *(.fini)
+ *(.gnu.version)
+ *(.rodata)
+ *fill*         0x0000000040100566        0x2 ff
+ .rodata        0x0000000040100568      0x155 boot8266.o
+ *(.rodata.*)
+                0x00000000401006bd                _text_end = ABSOLUTE (.)
+                0x00000000401006bd                _etext = .
+                0x0000000040100ef0                . = (((. & 0xfffffffffffff000) + 0xf00) - 0x10)
+ *fill*         0x00000000401006bd      0x833 ff
+ *(.param)
+ .param         0x0000000040100ef0        0x8 boot8266.o
+                0x0000000040100ef0                gpio_mask
+                0x0000000040100ef4                gpio_wait_ms
+                0x0000000040100fe4                . = ((. & 0xfffffffffffff000) + 0xfe4)
+ *fill*         0x0000000040100ef8       0xec ff
+
+.lit4           0x0000000040100fe4        0x0
+                0x0000000040100fe4                _lit4_start = ABSOLUTE (.)
+ *(*.lit4)
+ *(.lit4.*)
+ *(.gnu.linkonce.lit4.*)
+                0x0000000040100fe4                _lit4_end = ABSOLUTE (.)
+                [!provide]                        PROVIDE (Cache_Read_Disable, 0x400047f0)
+                [!provide]                        PROVIDE (Cache_Read_Enable, 0x40004678)
+                [!provide]                        PROVIDE (FilePacketSendReqMsgProc, 0x400035a0)
+                [!provide]                        PROVIDE (FlashDwnLdParamCfgMsgProc, 0x4000368c)
+                [!provide]                        PROVIDE (FlashDwnLdStartMsgProc, 0x40003538)
+                [!provide]                        PROVIDE (FlashDwnLdStopReqMsgProc, 0x40003658)
+                [!provide]                        PROVIDE (GetUartDevice, 0x40003f4c)
+                0x0000000040009900                PROVIDE (MD5Final, 0x40009900)
+                0x0000000040009818                PROVIDE (MD5Init, 0x40009818)
+                0x0000000040009834                PROVIDE (MD5Update, 0x40009834)
+                [!provide]                        PROVIDE (MemDwnLdStartMsgProc, 0x400036c4)
+                [!provide]                        PROVIDE (MemDwnLdStopReqMsgProc, 0x4000377c)
+                [!provide]                        PROVIDE (MemPacketSendReqMsgProc, 0x400036f0)
+                [!provide]                        PROVIDE (RcvMsg, 0x40003eac)
+                [!provide]                        PROVIDE (SHA1Final, 0x4000b648)
+                [!provide]                        PROVIDE (SHA1Init, 0x4000b584)
+                [!provide]                        PROVIDE (SHA1Transform, 0x4000a364)
+                [!provide]                        PROVIDE (SHA1Update, 0x4000b5a8)
+                [!provide]                        PROVIDE (SPI_read_status, 0x400043c8)
+                [!provide]                        PROVIDE (SPI_write_status, 0x40004400)
+                [!provide]                        PROVIDE (SPI_write_enable, 0x4000443c)
+                [!provide]                        PROVIDE (Wait_SPI_Idle, 0x4000448c)
+                [!provide]                        PROVIDE (Enable_QMode, 0x400044c0)
+                [!provide]                        PROVIDE (SPIEraseArea, 0x40004b44)
+                [!provide]                        PROVIDE (SPIEraseBlock, 0x400049b4)
+                [!provide]                        PROVIDE (SPIEraseChip, 0x40004984)
+                [!provide]                        PROVIDE (SPIEraseSector, 0x40004a00)
+                [!provide]                        PROVIDE (SPILock, 0x400048a8)
+                [!provide]                        PROVIDE (SPIParamCfg, 0x40004c2c)
+                0x0000000040004b1c                PROVIDE (SPIRead, 0x40004b1c)
+                [!provide]                        PROVIDE (SPIReadModeCnfig, 0x400048ec)
+                [!provide]                        PROVIDE (SPIUnlock, 0x40004878)
+                [!provide]                        PROVIDE (SPIWrite, 0x40004a4c)
+                [!provide]                        PROVIDE (SelectSpiFunction, 0x40003f58)
+                [!provide]                        PROVIDE (SendMsg, 0x40003cf4)
+                [!provide]                        PROVIDE (UartConnCheck, 0x40003230)
+                [!provide]                        PROVIDE (UartConnectProc, 0x400037a0)
+                [!provide]                        PROVIDE (UartDwnLdProc, 0x40003368)
+                [!provide]                        PROVIDE (UartGetCmdLn, 0x40003ef4)
+                [!provide]                        PROVIDE (UartRegReadProc, 0x4000381c)
+                [!provide]                        PROVIDE (UartRegWriteProc, 0x400037ac)
+                [!provide]                        PROVIDE (UartRxString, 0x40003c30)
+                [!provide]                        PROVIDE (Uart_Init, 0x40003a14)
+                0x0000000040000010                PROVIDE (_DebugExceptionVector, 0x40000010)
+                0x0000000040000070                PROVIDE (_DoubleExceptionVector, 0x40000070)
+                0x0000000040000030                PROVIDE (_KernelExceptionVector, 0x40000030)
+                0x0000000040000020                PROVIDE (_NMIExceptionVector, 0x40000020)
+                [!provide]                        PROVIDE (_ResetHandler, 0x400000a4)
+                [!provide]                        PROVIDE (_ResetVector, 0x40000080)
+                0x0000000040000050                PROVIDE (_UserExceptionVector, 0x40000050)
+                [!provide]                        PROVIDE (__adddf3, 0x4000c538)
+                [!provide]                        PROVIDE (__addsf3, 0x4000c180)
+                [!provide]                        PROVIDE (__divdf3, 0x4000cb94)
+                [!provide]                        PROVIDE (__divdi3, 0x4000ce60)
+                [!provide]                        PROVIDE (__divsi3, 0x4000dc88)
+                [!provide]                        PROVIDE (__extendsfdf2, 0x4000cdfc)
+                [!provide]                        PROVIDE (__fixdfsi, 0x4000ccb8)
+                [!provide]                        PROVIDE (__fixunsdfsi, 0x4000cd00)
+                [!provide]                        PROVIDE (__fixunssfsi, 0x4000c4c4)
+                [!provide]                        PROVIDE (__floatsidf, 0x4000e2f0)
+                [!provide]                        PROVIDE (__floatsisf, 0x4000e2ac)
+                [!provide]                        PROVIDE (__floatunsidf, 0x4000e2e8)
+                [!provide]                        PROVIDE (__floatunsisf, 0x4000e2a4)
+                [!provide]                        PROVIDE (__muldf3, 0x4000c8f0)
+                [!provide]                        PROVIDE (__muldi3, 0x40000650)
+                [!provide]                        PROVIDE (__mulsf3, 0x4000c3dc)
+                [!provide]                        PROVIDE (__subdf3, 0x4000c688)
+                [!provide]                        PROVIDE (__subsf3, 0x4000c268)
+                [!provide]                        PROVIDE (__truncdfsf2, 0x4000cd5c)
+                [!provide]                        PROVIDE (__udivdi3, 0x4000d310)
+                [!provide]                        PROVIDE (__udivsi3, 0x4000e21c)
+                [!provide]                        PROVIDE (__umoddi3, 0x4000d770)
+                [!provide]                        PROVIDE (__umodsi3, 0x4000e268)
+                [!provide]                        PROVIDE (__umulsidi3, 0x4000dcf0)
+                [!provide]                        PROVIDE (_rom_store, 0x4000e388)
+                [!provide]                        PROVIDE (_rom_store_table, 0x4000e328)
+                [!provide]                        PROVIDE (_start, 0x4000042c)
+                [!provide]                        PROVIDE (_xtos_alloca_handler, 0x4000dbe0)
+                [!provide]                        PROVIDE (_xtos_c_wrapper_handler, 0x40000598)
+                [!provide]                        PROVIDE (_xtos_cause3_handler, 0x40000590)
+                [!provide]                        PROVIDE (_xtos_ints_off, 0x4000bda4)
+                [!provide]                        PROVIDE (_xtos_ints_on, 0x4000bd84)
+                [!provide]                        PROVIDE (_xtos_l1int_handler, 0x4000048c)
+                [!provide]                        PROVIDE (_xtos_p_none, 0x4000dbf8)
+                [!provide]                        PROVIDE (_xtos_restore_intlevel, 0x4000056c)
+                [!provide]                        PROVIDE (_xtos_return_from_exc, 0x4000dc54)
+                [!provide]                        PROVIDE (_xtos_set_exception_handler, 0x40000454)
+                [!provide]                        PROVIDE (_xtos_set_interrupt_handler, 0x4000bd70)
+                [!provide]                        PROVIDE (_xtos_set_interrupt_handler_arg, 0x4000bd28)
+                [!provide]                        PROVIDE (_xtos_set_intlevel, 0x4000dbfc)
+                [!provide]                        PROVIDE (_xtos_set_min_intlevel, 0x4000dc18)
+                [!provide]                        PROVIDE (_xtos_set_vpri, 0x40000574)
+                [!provide]                        PROVIDE (_xtos_syscall_handler, 0x4000dbe4)
+                [!provide]                        PROVIDE (_xtos_unhandled_exception, 0x4000dc44)
+                [!provide]                        PROVIDE (_xtos_unhandled_interrupt, 0x4000dc3c)
+                [!provide]                        PROVIDE (aes_decrypt, 0x400092d4)
+                [!provide]                        PROVIDE (aes_decrypt_deinit, 0x400092e4)
+                [!provide]                        PROVIDE (aes_decrypt_init, 0x40008ea4)
+                [!provide]                        PROVIDE (aes_unwrap, 0x40009410)
+                [!provide]                        PROVIDE (base64_decode, 0x40009648)
+                [!provide]                        PROVIDE (base64_encode, 0x400094fc)
+                [!provide]                        PROVIDE (bzero, 0x4000de84)
+                [!provide]                        PROVIDE (cmd_parse, 0x40000814)
+                [!provide]                        PROVIDE (conv_str_decimal, 0x40000b24)
+                [!provide]                        PROVIDE (conv_str_hex, 0x40000cb8)
+                [!provide]                        PROVIDE (convert_para_str, 0x40000a60)
+                [!provide]                        PROVIDE (dtm_get_intr_mask, 0x400026d0)
+                [!provide]                        PROVIDE (dtm_params_init, 0x4000269c)
+                [!provide]                        PROVIDE (dtm_set_intr_mask, 0x400026c8)
+                [!provide]                        PROVIDE (dtm_set_params, 0x400026dc)
+                [!provide]                        PROVIDE (eprintf, 0x40001d14)
+                [!provide]                        PROVIDE (eprintf_init_buf, 0x40001cb8)
+                [!provide]                        PROVIDE (eprintf_to_host, 0x40001d48)
+                [!provide]                        PROVIDE (est_get_printf_buf_remain_len, 0x40002494)
+                [!provide]                        PROVIDE (est_reset_printf_buf_len, 0x4000249c)
+                [!provide]                        PROVIDE (ets_bzero, 0x40002ae8)
+                [!provide]                        PROVIDE (ets_char2xdigit, 0x40002b74)
+                [!provide]                        PROVIDE (ets_delay_us, 0x40002ecc)
+                [!provide]                        PROVIDE (ets_enter_sleep, 0x400027b8)
+                [!provide]                        PROVIDE (ets_external_printf, 0x40002578)
+                [!provide]                        PROVIDE (ets_get_cpu_frequency, 0x40002f0c)
+                [!provide]                        PROVIDE (ets_getc, 0x40002bcc)
+                [!provide]                        PROVIDE (ets_install_external_printf, 0x40002450)
+                [!provide]                        PROVIDE (ets_install_putc1, 0x4000242c)
+                [!provide]                        PROVIDE (ets_install_putc2, 0x4000248c)
+                [!provide]                        PROVIDE (ets_install_uart_printf, 0x40002438)
+                [!provide]                        PROVIDE (ets_intr_lock, 0x40000f74)
+                [!provide]                        PROVIDE (ets_intr_unlock, 0x40000f80)
+                [!provide]                        PROVIDE (ets_isr_attach, 0x40000f88)
+                [!provide]                        PROVIDE (ets_isr_mask, 0x40000f98)
+                [!provide]                        PROVIDE (ets_isr_unmask, 0x40000fa8)
+                [!provide]                        PROVIDE (ets_memcmp, 0x400018d4)
+                [!provide]                        PROVIDE (ets_memcpy, 0x400018b4)
+                [!provide]                        PROVIDE (ets_memmove, 0x400018c4)
+                [!provide]                        PROVIDE (ets_memset, 0x400018a4)
+                [!provide]                        PROVIDE (ets_post, 0x40000e24)
+                [!provide]                        PROVIDE (ets_printf, 0x400024cc)
+                [!provide]                        PROVIDE (ets_putc, 0x40002be8)
+                [!provide]                        PROVIDE (ets_rtc_int_register, 0x40002a40)
+                [!provide]                        PROVIDE (ets_run, 0x40000e04)
+                [!provide]                        PROVIDE (ets_set_idle_cb, 0x40000dc0)
+                [!provide]                        PROVIDE (ets_set_user_start, 0x40000fbc)
+                [!provide]                        PROVIDE (ets_str2macaddr, 0x40002af8)
+                [!provide]                        PROVIDE (ets_strcmp, 0x40002aa8)
+                [!provide]                        PROVIDE (ets_strcpy, 0x40002a88)
+                [!provide]                        PROVIDE (ets_strlen, 0x40002ac8)
+                [!provide]                        PROVIDE (ets_strncmp, 0x40002ab8)
+                [!provide]                        PROVIDE (ets_strncpy, 0x40002a98)
+                [!provide]                        PROVIDE (ets_strstr, 0x40002ad8)
+                [!provide]                        PROVIDE (ets_task, 0x40000dd0)
+                [!provide]                        PROVIDE (ets_timer_arm, 0x40002cc4)
+                [!provide]                        PROVIDE (ets_timer_disarm, 0x40002d40)
+                [!provide]                        PROVIDE (ets_timer_done, 0x40002d80)
+                [!provide]                        PROVIDE (ets_timer_handler_isr, 0x40002da8)
+                [!provide]                        PROVIDE (ets_timer_init, 0x40002e68)
+                [!provide]                        PROVIDE (ets_timer_setfn, 0x40002c48)
+                [!provide]                        PROVIDE (ets_uart_printf, 0x40002544)
+                [!provide]                        PROVIDE (ets_update_cpu_frequency, 0x40002f04)
+                0x0000000040001f00                PROVIDE (ets_vprintf, 0x40001f00)
+                [!provide]                        PROVIDE (ets_wdt_disable, 0x400030f0)
+                [!provide]                        PROVIDE (ets_wdt_enable, 0x40002fa0)
+                [!provide]                        PROVIDE (ets_wdt_get_mode, 0x40002f34)
+                [!provide]                        PROVIDE (ets_wdt_init, 0x40003170)
+                [!provide]                        PROVIDE (ets_wdt_restore, 0x40003158)
+                0x0000000040001da0                PROVIDE (ets_write_char, 0x40001da0)
+                [!provide]                        PROVIDE (get_first_seg, 0x4000091c)
+                0x0000000040004c50                PROVIDE (gpio_init, 0x40004c50)
+                0x0000000040004cf0                PROVIDE (gpio_input_get, 0x40004cf0)
+                [!provide]                        PROVIDE (gpio_intr_ack, 0x40004dcc)
+                [!provide]                        PROVIDE (gpio_intr_handler_register, 0x40004e28)
+                [!provide]                        PROVIDE (gpio_intr_pending, 0x40004d88)
+                [!provide]                        PROVIDE (gpio_intr_test, 0x40004efc)
+                [!provide]                        PROVIDE (gpio_output_set, 0x40004cd0)
+                [!provide]                        PROVIDE (gpio_pin_intr_state_set, 0x40004d90)
+                [!provide]                        PROVIDE (gpio_pin_wakeup_disable, 0x40004ed4)
+                [!provide]                        PROVIDE (gpio_pin_wakeup_enable, 0x40004e90)
+                [!provide]                        PROVIDE (gpio_register_get, 0x40004d5c)
+                [!provide]                        PROVIDE (gpio_register_set, 0x40004d04)
+                [!provide]                        PROVIDE (hmac_md5, 0x4000a2cc)
+                [!provide]                        PROVIDE (hmac_md5_vector, 0x4000a160)
+                [!provide]                        PROVIDE (hmac_sha1, 0x4000ba28)
+                [!provide]                        PROVIDE (hmac_sha1_vector, 0x4000b8b4)
+                [!provide]                        PROVIDE (lldesc_build_chain, 0x40004f40)
+                [!provide]                        PROVIDE (lldesc_num2link, 0x40005050)
+                [!provide]                        PROVIDE (lldesc_set_owner, 0x4000507c)
+                [!provide]                        PROVIDE (main, 0x40000fec)
+                [!provide]                        PROVIDE (md5_vector, 0x400097ac)
+                [!provide]                        PROVIDE (mem_calloc, 0x40001c2c)
+                [!provide]                        PROVIDE (mem_free, 0x400019e0)
+                [!provide]                        PROVIDE (mem_init, 0x40001998)
+                [!provide]                        PROVIDE (mem_malloc, 0x40001b40)
+                [!provide]                        PROVIDE (mem_realloc, 0x40001c6c)
+                [!provide]                        PROVIDE (mem_trim, 0x40001a14)
+                [!provide]                        PROVIDE (mem_zalloc, 0x40001c58)
+                0x000000004000dea8                PROVIDE (memcmp, 0x4000dea8)
+                [!provide]                        PROVIDE (memcpy, 0x4000df48)
+                [!provide]                        PROVIDE (memmove, 0x4000e04c)
+                0x000000004000e190                PROVIDE (memset, 0x4000e190)
+                [!provide]                        PROVIDE (multofup, 0x400031c0)
+                [!provide]                        PROVIDE (pbkdf2_sha1, 0x4000b840)
+                [!provide]                        PROVIDE (phy_get_romfuncs, 0x40006b08)
+                [!provide]                        PROVIDE (rand, 0x40000600)
+                [!provide]                        PROVIDE (rc4_skip, 0x4000dd68)
+                [!provide]                        PROVIDE (recv_packet, 0x40003d08)
+                [!provide]                        PROVIDE (remove_head_space, 0x40000a04)
+                [!provide]                        PROVIDE (rijndaelKeySetupDec, 0x40008dd0)
+                [!provide]                        PROVIDE (rijndaelKeySetupEnc, 0x40009300)
+                [!provide]                        PROVIDE (rom_abs_temp, 0x400060c0)
+                [!provide]                        PROVIDE (rom_ana_inf_gating_en, 0x40006b10)
+                [!provide]                        PROVIDE (rom_cal_tos_v50, 0x40007a28)
+                [!provide]                        PROVIDE (rom_chip_50_set_channel, 0x40006f84)
+                [!provide]                        PROVIDE (rom_chip_v5_disable_cca, 0x400060d0)
+                [!provide]                        PROVIDE (rom_chip_v5_enable_cca, 0x400060ec)
+                [!provide]                        PROVIDE (rom_chip_v5_rx_init, 0x4000711c)
+                [!provide]                        PROVIDE (rom_chip_v5_sense_backoff, 0x4000610c)
+                [!provide]                        PROVIDE (rom_chip_v5_tx_init, 0x4000718c)
+                [!provide]                        PROVIDE (rom_dc_iq_est, 0x4000615c)
+                [!provide]                        PROVIDE (rom_en_pwdet, 0x400061b8)
+                [!provide]                        PROVIDE (rom_get_bb_atten, 0x40006238)
+                [!provide]                        PROVIDE (rom_get_corr_power, 0x40006260)
+                [!provide]                        PROVIDE (rom_get_fm_sar_dout, 0x400062dc)
+                [!provide]                        PROVIDE (rom_get_noisefloor, 0x40006394)
+                [!provide]                        PROVIDE (rom_get_power_db, 0x400063b0)
+                [!provide]                        PROVIDE (rom_i2c_readReg, 0x40007268)
+                [!provide]                        PROVIDE (rom_i2c_readReg_Mask, 0x4000729c)
+                [!provide]                        PROVIDE (rom_i2c_writeReg, 0x400072d8)
+                [!provide]                        PROVIDE (rom_i2c_writeReg_Mask, 0x4000730c)
+                [!provide]                        PROVIDE (rom_iq_est_disable, 0x40006400)
+                [!provide]                        PROVIDE (rom_iq_est_enable, 0x40006430)
+                [!provide]                        PROVIDE (rom_linear_to_db, 0x40006484)
+                [!provide]                        PROVIDE (rom_mhz2ieee, 0x400065a4)
+                [!provide]                        PROVIDE (rom_pbus_dco___SA2, 0x40007bf0)
+                [!provide]                        PROVIDE (rom_pbus_debugmode, 0x4000737c)
+                [!provide]                        PROVIDE (rom_pbus_enter_debugmode, 0x40007410)
+                [!provide]                        PROVIDE (rom_pbus_exit_debugmode, 0x40007448)
+                [!provide]                        PROVIDE (rom_pbus_force_test, 0x4000747c)
+                [!provide]                        PROVIDE (rom_pbus_rd, 0x400074d8)
+                [!provide]                        PROVIDE (rom_pbus_set_rxgain, 0x4000754c)
+                [!provide]                        PROVIDE (rom_pbus_set_txgain, 0x40007610)
+                [!provide]                        PROVIDE (rom_pbus_workmode, 0x40007648)
+                [!provide]                        PROVIDE (rom_pbus_xpd_rx_off, 0x40007688)
+                [!provide]                        PROVIDE (rom_pbus_xpd_rx_on, 0x400076cc)
+                [!provide]                        PROVIDE (rom_pbus_xpd_tx_off, 0x400076fc)
+                [!provide]                        PROVIDE (rom_pbus_xpd_tx_on, 0x40007740)
+                [!provide]                        PROVIDE (rom_pbus_xpd_tx_on__low_gain, 0x400077a0)
+                [!provide]                        PROVIDE (rom_phy_reset_req, 0x40007804)
+                [!provide]                        PROVIDE (rom_restart_cal, 0x4000781c)
+                [!provide]                        PROVIDE (rom_rfcal_pwrctrl, 0x40007eb4)
+                [!provide]                        PROVIDE (rom_rfcal_rxiq, 0x4000804c)
+                [!provide]                        PROVIDE (rom_rfcal_rxiq_set_reg, 0x40008264)
+                [!provide]                        PROVIDE (rom_rfcal_txcap, 0x40008388)
+                [!provide]                        PROVIDE (rom_rfcal_txiq, 0x40008610)
+                [!provide]                        PROVIDE (rom_rfcal_txiq_cover, 0x400088b8)
+                [!provide]                        PROVIDE (rom_rfcal_txiq_set_reg, 0x40008a70)
+                [!provide]                        PROVIDE (rom_rfpll_reset, 0x40007868)
+                [!provide]                        PROVIDE (rom_rfpll_set_freq, 0x40007968)
+                [!provide]                        PROVIDE (rom_rxiq_cover_mg_mp, 0x40008b6c)
+                [!provide]                        PROVIDE (rom_rxiq_get_mis, 0x40006628)
+                [!provide]                        PROVIDE (rom_sar_init, 0x40006738)
+                [!provide]                        PROVIDE (rom_set_ana_inf_tx_scale, 0x4000678c)
+                [!provide]                        PROVIDE (rom_set_channel_freq, 0x40006c50)
+                [!provide]                        PROVIDE (rom_set_loopback_gain, 0x400067c8)
+                [!provide]                        PROVIDE (rom_set_noise_floor, 0x40006830)
+                [!provide]                        PROVIDE (rom_set_rxclk_en, 0x40006550)
+                [!provide]                        PROVIDE (rom_set_txbb_atten, 0x40008c6c)
+                [!provide]                        PROVIDE (rom_set_txclk_en, 0x4000650c)
+                [!provide]                        PROVIDE (rom_set_txiq_cal, 0x40008d34)
+                [!provide]                        PROVIDE (rom_start_noisefloor, 0x40006874)
+                [!provide]                        PROVIDE (rom_start_tx_tone, 0x400068b4)
+                [!provide]                        PROVIDE (rom_stop_tx_tone, 0x4000698c)
+                [!provide]                        PROVIDE (rom_tx_mac_disable, 0x40006a98)
+                [!provide]                        PROVIDE (rom_tx_mac_enable, 0x40006ad4)
+                [!provide]                        PROVIDE (rom_txtone_linear_pwr, 0x40006a1c)
+                [!provide]                        PROVIDE (rom_write_rfpll_sdm, 0x400078dc)
+                [!provide]                        PROVIDE (roundup2, 0x400031b4)
+                [!provide]                        PROVIDE (rtc_enter_sleep, 0x40002870)
+                0x00000000400025e0                PROVIDE (rtc_get_reset_reason, 0x400025e0)
+                [!provide]                        PROVIDE (rtc_intr_handler, 0x400029ec)
+                [!provide]                        PROVIDE (rtc_set_sleep_mode, 0x40002668)
+                [!provide]                        PROVIDE (save_rxbcn_mactime, 0x400027a4)
+                [!provide]                        PROVIDE (save_tsf_us, 0x400027ac)
+                [!provide]                        PROVIDE (send_packet, 0x40003c80)
+                [!provide]                        PROVIDE (sha1_prf, 0x4000ba48)
+                [!provide]                        PROVIDE (sha1_vector, 0x4000a2ec)
+                [!provide]                        PROVIDE (sip_alloc_to_host_evt, 0x40005180)
+                [!provide]                        PROVIDE (sip_get_ptr, 0x400058a8)
+                [!provide]                        PROVIDE (sip_get_state, 0x40005668)
+                [!provide]                        PROVIDE (sip_init_attach, 0x4000567c)
+                [!provide]                        PROVIDE (sip_install_rx_ctrl_cb, 0x4000544c)
+                [!provide]                        PROVIDE (sip_install_rx_data_cb, 0x4000545c)
+                [!provide]                        PROVIDE (sip_post, 0x400050fc)
+                [!provide]                        PROVIDE (sip_post_init, 0x400056c4)
+                [!provide]                        PROVIDE (sip_reclaim_from_host_cmd, 0x4000534c)
+                [!provide]                        PROVIDE (sip_reclaim_tx_data_pkt, 0x400052c0)
+                [!provide]                        PROVIDE (sip_send, 0x40005808)
+                [!provide]                        PROVIDE (sip_to_host_chain_append, 0x40005864)
+                [!provide]                        PROVIDE (sip_to_host_evt_send_done, 0x40005234)
+                [!provide]                        PROVIDE (slc_add_credits, 0x400060ac)
+                [!provide]                        PROVIDE (slc_enable, 0x40005d90)
+                [!provide]                        PROVIDE (slc_from_host_chain_fetch, 0x40005f24)
+                [!provide]                        PROVIDE (slc_from_host_chain_recycle, 0x40005e94)
+                [!provide]                        PROVIDE (slc_init_attach, 0x40005c50)
+                [!provide]                        PROVIDE (slc_init_credit, 0x4000608c)
+                [!provide]                        PROVIDE (slc_pause_from_host, 0x40006014)
+                [!provide]                        PROVIDE (slc_reattach, 0x40005c1c)
+                [!provide]                        PROVIDE (slc_resume_from_host, 0x4000603c)
+                [!provide]                        PROVIDE (slc_select_tohost_gpio, 0x40005dc0)
+                [!provide]                        PROVIDE (slc_select_tohost_gpio_mode, 0x40005db8)
+                [!provide]                        PROVIDE (slc_send_to_host_chain, 0x40005de4)
+                [!provide]                        PROVIDE (slc_set_host_io_max_window, 0x40006068)
+                [!provide]                        PROVIDE (slc_to_host_chain_recycle, 0x40005f10)
+                [!provide]                        PROVIDE (software_reset, 0x4000264c)
+                [!provide]                        PROVIDE (spi_flash_attach, 0x40004644)
+                [!provide]                        PROVIDE (srand, 0x400005f0)
+                [!provide]                        PROVIDE (strcmp, 0x4000bdc8)
+                [!provide]                        PROVIDE (strcpy, 0x4000bec8)
+                [!provide]                        PROVIDE (strlen, 0x4000bf4c)
+                [!provide]                        PROVIDE (strncmp, 0x4000bfa8)
+                [!provide]                        PROVIDE (strncpy, 0x4000c0a0)
+                [!provide]                        PROVIDE (strstr, 0x4000e1e0)
+                [!provide]                        PROVIDE (timer_insert, 0x40002c64)
+                [!provide]                        PROVIDE (uartAttach, 0x4000383c)
+                [!provide]                        PROVIDE (uart_baudrate_detect, 0x40003924)
+                [!provide]                        PROVIDE (uart_buff_switch, 0x400038a4)
+                0x00000000400039d8                PROVIDE (uart_div_modify, 0x400039d8)
+                [!provide]                        PROVIDE (uart_rx_intr_handler, 0x40003bbc)
+                [!provide]                        PROVIDE (uart_rx_one_char, 0x40003b8c)
+                [!provide]                        PROVIDE (uart_rx_one_char_block, 0x40003b64)
+                [!provide]                        PROVIDE (uart_rx_readbuff, 0x40003ec8)
+                [!provide]                        PROVIDE (uart_tx_one_char, 0x40003b30)
+                [!provide]                        PROVIDE (wepkey_128, 0x4000bc40)
+                [!provide]                        PROVIDE (wepkey_64, 0x4000bb3c)
+                [!provide]                        PROVIDE (xthal_bcopy, 0x40000688)
+                [!provide]                        PROVIDE (xthal_copy123, 0x4000074c)
+                [!provide]                        PROVIDE (xthal_get_ccompare, 0x4000dd4c)
+                [!provide]                        PROVIDE (xthal_get_ccount, 0x4000dd38)
+                [!provide]                        PROVIDE (xthal_get_interrupt, 0x4000dd58)
+                [!provide]                        PROVIDE (xthal_get_intread, 0x4000dd58)
+                [!provide]                        PROVIDE (xthal_memcpy, 0x400006c4)
+                [!provide]                        PROVIDE (xthal_set_ccompare, 0x4000dd40)
+                [!provide]                        PROVIDE (xthal_set_intclear, 0x4000dd60)
+                [!provide]                        PROVIDE (xthal_spill_registers_into_stack_nw, 0x4000e320)
+                [!provide]                        PROVIDE (xthal_window_spill, 0x4000e324)
+                [!provide]                        PROVIDE (xthal_window_spill_nw, 0x4000e320)
+                [!provide]                        PROVIDE (Te0, 0x3fffccf0)
+                [!provide]                        PROVIDE (Td0, 0x3fffd100)
+                [!provide]                        PROVIDE (Td4s, 0x3fffd500)
+                [!provide]                        PROVIDE (rcons, 0x3fffd0f0)
+                [!provide]                        PROVIDE (UartDev, 0x3fffde10)
+                [!provide]                        PROVIDE (flashchip, 0x3fffc714)
+OUTPUT(boot8266 elf32-xtensa-le)
+
+.comment        0x0000000000000000       0x41
+ .comment       0x0000000000000000       0x41 boot8266.o
+                                         0x42 (size before relaxing)
+ .comment       0x0000000000000041       0x42 unaligned_printf.o
+
+.xtensa.info    0x0000000000000000       0x38
+ .xtensa.info   0x0000000000000000       0x38 boot8266.o
+ .xtensa.info   0x0000000000000038        0x0 unaligned_printf.o
+
+.xt.lit         0x0000000000000000       0x28
+ .xt.lit        0x0000000000000000       0x20 boot8266.o
+ .xt.lit        0x0000000000000020        0x8 unaligned_printf.o
+
+.xt.prop        0x0000000000000000      0x300
+ .xt.prop       0x0000000000000000      0x2ac boot8266.o
+                                        0x2e8 (size before relaxing)
+ .xt.prop       0x00000000000002ac       0x54 unaligned_printf.o
+
+Cross Reference Table
+
+Symbol                                            File
+MD5Final                                          boot8266.o
+MD5Init                                           boot8266.o
+MD5Update                                         boot8266.o
+SPIRead                                           boot8266.o
+_bss_end                                          unaligned_printf.o
+                                                  boot8266.o
+_printf                                           unaligned_printf.o
+                                                  boot8266.o
+check_buttons                                     boot8266.o
+check_main_app                                    boot8266.o
+ets_vprintf                                       unaligned_printf.o
+ets_write_char                                    unaligned_printf.o
+gpio_init                                         boot8266.o
+gpio_input_get                                    boot8266.o
+gpio_mask                                         boot8266.o
+gpio_wait_ms                                      boot8266.o
+memcmp                                            boot8266.o
+memset                                            boot8266.o
+rtc_get_reset_reason                              boot8266.o
+start                                             boot8266.o
+uart_div_modify                                   boot8266.o
+uart_flush                                        boot8266.o

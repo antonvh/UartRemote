@@ -1,0 +1,20 @@
+From d718aeffcfcea9574b5b3d074202bcd9ac21451f Mon Sep 17 00:00:00 2001
+From: Matthew Schinckel <matt@schinckel.net>
+Date: Fri, 25 May 2018 21:02:58 +0930
+Subject: [PATCH] Display the key modulus after generating.
+
+---
+ ota-client/gen_keys.sh | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/ota-client/gen_keys.sh b/ota-client/gen_keys.sh
+index 7a518b0..5ab057c 100644
+--- a/ota-client/gen_keys.sh
++++ b/ota-client/gen_keys.sh
+@@ -3,3 +3,5 @@ BITS=512
+ openssl genrsa -out priv.key -3 $BITS
+ openssl rsa -in priv.key -pubout -out pub.key
+ openssl pkey -in priv.key -text
++
++python -c "import rsa_sign; rsa_sign.dump_c(rsa_sign.load_key())"
+\ No newline at end of file
