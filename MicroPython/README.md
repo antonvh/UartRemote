@@ -70,13 +70,13 @@ In this example two functions are defined `imu`, `led` and `grid`. These functio
 
 ## Sending commands
 
-On the master (e.g. EV3):
+On the master (e.g. SPIKE):
 ```python
-from uartremote import *
-u=UartRemote(Port.S1)
+from projects.uartremote import *
+u=UartRemote("A")
 u.call('imu')
 u.call('grid','B',10)
-u.call('led','B',[2,100,100,100])
+u.call('led','repr',[2,100,100,100]) # use repr for pasing an array
 ```
 ### `call(<cmd>,[<type>,<data>])`
 The `call` method allows the Master to send a command to the Slave. When no values need to be passed with the command, the `<type>` and `<data>` can be omitted.  The `<data>` can be a single value, a string or a list of values. 
@@ -118,7 +118,7 @@ If the encoder fails it resorts to raw bytes by default.
 
 # Example application
 ## Slave code
-On the slave, the following code is used;
+On the slave, the following code is used (e.g. on ESP8266):
 ```python
 def led(v):
     print('led')
@@ -126,7 +126,7 @@ def led(v):
         print(i)
     
 def imu():
-    return([12.3,11.1,180.0])
+    return(12.3,11.1,180.0)
 
 def grid(v):
     addr=v
@@ -134,57 +134,57 @@ def grid(v):
     return(a[addr%9])
 
 from uartremote import *
-u=UartRemote()
-u.add_command(led)
-u.add_command(imu,'f')
-u.add_command(grid,'B')
-u.loop()
+ur=UartRemote()
+ur.add_command(led)
+ur.add_command(imu,'3f')
+ur.add_command(grid,'B')
+ur.loop()
 ```
 Here three different example functions are used: `led` which takes a value, but does not return a value, `imu` which returns a value, but does not take a value, and `grid` wich takes a values and returns a value.
 In the `add_command` method, the second argument is the `formatstring`, defining the format of the return argument9s).
 
 ## Master code
-On the Master the following code is used:
+On the Master the following code is used (e.g. on the SPIKE):
 ```python
-from uartremote import *
-u=Uartremote(Port.S1)
+from projects.uartremote import *
+u=UartRemote("A")
 ```
 In repl the following examples result in:
 ```
->>> u.call('led','B',[1,2,3,4])
-('ledack', [])
+>>> u.call('led','repr',[1,2,3,4])
+('ledack', b'ok')
 >>> u.call('imu')
-('imuack', [12.29999923706055, 11.09999847412109, 180.0])
+('imuack', (12.3, 11.1, 180.0))
 >>> u.call('grid','B',1)
-('gridack', [21])
+('gridack', 21)
 >>> u.call('unknown')
-('error', [b'nok'])
+('err', 'Command not found: unkown')
 ```
 
 # Simultaneous sending and receiving
 
 The library allows for simultaneously sending and receiving commands from both sides. Below the code for both sides is shown. In this example we use the EV3 and the ESP8266 board.
 
-### EV3
+### SPIKE
 ```python
 import time
-from uartremote import *
+from projects.uartremote import *
     
 def imu():
-    return([12.3,11.1,180.0])
+    return(12.3,11.1,180.0)
 
-u=UartRemote(Port.S1)
-u.add_command(imu,'f')
+u=UartRemote("A")
+u.add_command(imu,'3f')
 
-t_old=time.ticks_ms()+2000                      # wait 2 seconds before starting
-q=u.flush()                                     # flush uart rx buffer
+t_old=time.ticks_ms()+2000                              # wait 2 seconds before starting
+q=u.flush()                                             # flush uart rx buffer
 while True:
-    if u.available():                           # check if a command is available
-        u.execute_command(wait=False)
-    if time.ticks_ms()-t_old>1000:              # send a command every second
+    if u.available():                                   # check if a command is available
+        u.process_uart()
+    if time.ticks_ms()-t_old>1000:                      # send a command every second
         t_old=time.ticks_ms()
-        print("send led")                       # send 'led' command with data
-        print("recv=",u.call('led','b',[1,2,3,4]))
+        print("send led")                               # send 'led' command with data
+        print("recv=",u.call('led','repr',[1,2,3,4]))   # use repr for array
 ```
 
 ### ESP8266
@@ -205,7 +205,7 @@ t_old=time.ticks_ms()+2000                      # wait 2 seconds before starting
 q=u.flush()                                     # flush uart rx buffer
 while True:
     if u.available():                           # check if a command is available
-        u.execute_command(wait=False)
+        u.process_uart()
     if time.ticks_ms()-t_old>1000:              # send a command every second
         t_old=time.ticks_ms()
         print("send imu")
