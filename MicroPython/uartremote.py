@@ -25,6 +25,7 @@ platforms = {
     'Espressif ESP32-S2':_ESP32_S2,
     'esp8266':_ESP8266,
     'OpenMV4P-H7':_H7,
+    'OpenMV3-M7':H7,
     'LEGO Learning System Hub':_SPIKE,
     'darwin':_MAC
 }
