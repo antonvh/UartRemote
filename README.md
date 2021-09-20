@@ -77,3 +77,7 @@ This is the fastest option of all, but you'll have to do your own decoding/encod
 is encoded as:
 
 `b'\x15\x0ctest_command\x03rawabcd'`
+
+# To do, roadmap
+- Add wireless networking using sockets, rfcomm, ble etc...
+- Add python3 support for laptops/desktops
