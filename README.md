@@ -63,10 +63,9 @@ from projects.uartremote import *
 
 ur = UartRemote('F')
 
-print("Uart initialized")
-
 while True:
     r += 1
+    r = r % 360
     ur.call('set_color', 'i', r) # Encode as a struct.pack 'i' integer type.
     ack, fps = ur.call('get_fps')
     print("Running at {}fps on the ESP8266 board".format(fps))
