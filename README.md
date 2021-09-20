@@ -8,6 +8,8 @@ This is a library for robust, near real-time communication between two UART devi
 - The library has a command loop to wait and listen for calls. That loop is customizable and non-blocking so you can add your own code to it.
 - The C-struct-like encoding is included in the payload, so the other side always knows how to decode it.
 
+Usage: you can use all of parts of this library for your own projects. Please give us credits at least. We put a lot spare time in this. You are also welcome to contribute. Please fork and PR.
+
 ## Micropython
 
 Uniform library that works on standard MicroPython platforms, the EV3 and the Spike. See [example code and usage in the MicroPython subdirectory](MicroPython/README.md).
