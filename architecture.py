@@ -1,6 +1,5 @@
-# This is non working code !!!
-# Just sketching architecture on user side. Not everything is implemented yet.
-
+# This is non working code !!! Just some examples.
+# (c) Anton Vanhoucke & Ste7an
 
 
 #######  master side #######
