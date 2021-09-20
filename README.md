@@ -72,7 +72,7 @@ while True:
 ```
 
 On the slave esp8266 board, your code looks like this
-```
+```python
 from uartremote import *
 from neopixel import NeoPixel
 from pixelhelpers import hsl_to_rgb
