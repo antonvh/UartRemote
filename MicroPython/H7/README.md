@@ -1,5 +1,3 @@
-Copy the main.py from this director to the H7 flash drive to boot it with REPL enabled. This way you can access it from another uartremote device and upload scripts.
-
-Copy uartremote.py from one directory above to the flash drive too.
-
-The uartremote.mpy from the SPIKE directory will probably work too.
+# Installation
+1. Copy uartremote.py or SPIKE/uartremote.mpy above to the flash drive. The uartremote.mpy speeds startup and saves memory.
+2. Optionally copy main.py to the OpenMV flash drive. This boots in UART repl so you can download your scripts from the SPIKE/Robot Inventor side.

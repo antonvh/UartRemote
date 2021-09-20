@@ -17,32 +17,30 @@ ur.repl_run("ur.loop()", reply=False)
 
 # send receive command
 # identical to current situation, except for the extra () around encoding and payload.
-reply = ur.call('my_function', 'B2s', [[1,2,3],"hi"], encoder=ur.pack, decoder=ur.unpack)
-reply = ur.call('my_function', 'B2s', [[1,2,3],"hi"]) # equivalent
+
+reply = ur.call('my_function', 'B2s', [[1,2,3],"hi"])
 reply == ('my_functionack', ['hi', 'hihi', 'hihihi'])
 
-# Custom encode/decode. Slave side only gets and sends bytes.
 reply = ur.call(
     'total', 
+    'repr',
     [1,2,3,4], 
-    encode=lambda b: struct.pack('BBBB',*b), 
-    decode=lambda i: struct.unpack('i',i)
     )
 reply == ('totalack', 10)
 
 # default testing command. Returns strings you throw at it.
-reply = ur.call('echo', 's','hello')
+reply = ur.call('echo', '5s','hello')
 reply == ('echoack', 'hello')
-reply = ur.call('echo', 'B',3,5)
+reply = ur.call('echo', '2B',3,5)
 # Echo always returns strings
 reply == ('echoack', '[3,5]')
 
 # Turn off encoding to speed it up. Unpacker will stay default ur.unpack()
 # If ur.unpack() 'excepts' because of bad formatting it stops and returns the raw bytes.
-reply = ur.call('echo', b'hello', encoder=None, decoder=None)
+reply = ur.call('echo', b'hello')
 # Echo always returns strings
 reply == ('echoack', "b'hello'")
-reply = ur.call('raw_echo', b'hello', encoder=None, decoder=None)
+reply = ur.call('raw_echo', b'hello')
 reply == ('raw_echoack', b'hello')
 reply = ur.call('raw_echo', 'raw', b'hello')
 reply == ('raw_echoack', b'hello')
