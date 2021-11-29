@@ -18,6 +18,19 @@ Uniform library that works on standard MicroPython platforms, the EV3 and the Sp
 
 The same UartRemote library is also implemented for Arduino.
 
+# Installation
+## ESP8266
+Copy the [compiled library](Libraries/UartRemote/MicroPython/ESP8266) to the board with webREPL
+
+## SPIKE Prime and Robot Inventor
+Copy the [installer script](Libraries/UartRemote/MicroPython/SPIKE/install_uartremote.py) in an empty project inside the LEGO software and run the script ones. You can discard the script afterwards.
+
+## ESP32
+Copy the plain python file or the compiled library over to the board with rshell. You can get rshell via `pip3 install rshell`. Then go `rshell -p /dev/tty.usbserial-141230 -b 115200 --editor nano`. You can edit /pyboard/boot.py while you're at it, to configure your wifi connection.
+
+To copy the library, do this:
+`cp Libraries/UartRemote/MicroPython/uartremote.py /pyboard/`
+
 # Use cases
 ## Connecting a micropython AI/Computer vision camera to a robotic platform
 On the camera you can use code like this:
