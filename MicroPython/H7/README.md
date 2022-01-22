@@ -12,15 +12,16 @@ Example using basic face detection script from OpenMV IDE
 # this adds shell to the serial, port pins as defined
 # M4: UART(3):(Tx/RX) = P4, P5 = PB10, PB11
 # M7/H7: UART(1):(Tx/RX) = P1, P0 = PB14, PB15
-##import pyb, time
-##from machine import UART
-##from uos import dupterm
-##uart = UART(3, 115200)
-##dupterm(uart,2)
+## #openmv main.py dupe rshell to serial
+## import pyb, time
+## from machine import UART
+## from uos import dupterm
+## uart = UART(3, 115200)
+## dupterm(uart,2)
 
 MAINPY="""
 # Face Detection UART Example main.py for OpenMV micropython
-#
+
 import sensor, time, image
 from uartremote import *
 
@@ -37,14 +38,12 @@ V_CENTER = 80
 
 def location(r):
     # Returns a tuple with the centre of the face detection rectangle
-    # Coordinates have sensor centre as 0,0 instead of top left
     c = (r[0] + r[2]//2, r[1] + r[3]//2)
     return (c[0]-H_CENTER, c[1]-V_CENTER)
     face_cascade = image.HaarCascade("frontalface", stages=25)
 
 def get_face_loc():
     img = sensor.snapshot()
-    
     objects = img.find_features(face_cascade, threshold=0.75, scale_factor=1.25)
     if objects:
         return location(objects[0])
