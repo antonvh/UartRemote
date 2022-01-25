@@ -16,20 +16,29 @@ Uniform library that works on standard MicroPython platforms, the EV3 and the Sp
 
 ## Arduino
 
-The same UartRemote library is also implemented for Arduino.
+The same UartRemote library is also implemented for [Arduino](https://github.com/antonvh/UartRemote/tree/master/Arduino/UartRemote).
 
 # Installation
 ## ESP8266
 Copy the [compiled library](Libraries/UartRemote/MicroPython/ESP8266) to the board with webREPL
 
 ## SPIKE Prime and Robot Inventor
-Copy the [installer script](Libraries/UartRemote/MicroPython/SPIKE/install_uartremote.py) in an empty project inside the LEGO software and run the script ones. You can discard the script afterwards.
+Copy the [installer script](Libraries/UartRemote/MicroPython/SPIKE/install_uartremote.py) in an empty project inside the LEGO software and run the script ones. You can discard the script afterwards. Alternativly you can use the following ESP32 example with rshell as well...
 
-## ESP32
-Copy the plain python file or the compiled library over to the board with rshell. You can get rshell via `pip3 install rshell`. Then go `rshell -p /dev/tty.usbserial-141230 -b 115200 --editor nano`. You can edit /pyboard/boot.py while you're at it, to configure your wifi connection.
+## ESP32/STM32
+Copy the plain python file or the compiled library over...
 
-To copy the library, do this:
-`cp Libraries/UartRemote/MicroPython/uartremote.py /pyboard/`
+- You can get rshell via `pip3 install rshell`
+- If you have a single device this will connect: `rshell -p $(ls /dev/tty.usb*) -b 115200 --editor nano`
+  - othereise with `ls /dev/tty.usb*` 
+  - use your desired modem/serial `rshell -p /dev/tty.usbserial-141230 -b 115200 --editor nano`
+- Your device is now mounted in rshell> as /pyboard
+  - To copy the library, do this (now in rshell>): `cp Libraries/UartRemote/MicroPython/uartremote.py /pyboard/`
+
+Alternativly you can use some IDE's for GUI File managment, such as [ThonnyIDE](https://thonny.org) (win/osx/raspi) or [Mu IDE](https://codewith.mu)
+
+You can edit /pyboard/boot.py while you're at it, to configure your.. [wifi connection!](https://antonsmindstorms.com/?s=wifi)
+
 
 # Use cases
 ## Connecting a micropython AI/Computer vision camera to a robotic platform
