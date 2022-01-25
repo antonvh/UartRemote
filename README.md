@@ -1,6 +1,6 @@
 # Remote UART library: uartremote.py
 
-This is a library for robust, near real-time communication between two UART devices. We developed it with LEGO EV3, SPIKE Prime and other MicroPython (ESP) modules. The library has the following properties:
+This is a library for robust, near real-time communication between two UART devices. We developed it on python 3.9 with LEGO EV3, SPIKE Prime and other MicroPython (ESP/STM32) modules. The library has the following properties:
 - It is fast enough to read sensor data at 30-50Hz.
 - It is fully symmetrical, so master and slave can have the same import.
 - It includes a RAW REPL mode to upload code to a slave module. This means you can develop code for both modules in one file.
@@ -41,6 +41,8 @@ You can edit /pyboard/boot.py while you're at it, to configure your.. [wifi conn
 
 
 # Use cases
+For more examples see [example_scripts.py](example_scripts.py)
+
 ## Connecting a micropython AI/Computer vision camera to a robotic platform
 On the camera you can use code like this:
 ```python
