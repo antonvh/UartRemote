@@ -5,15 +5,15 @@ A simple solution would be to initate the code on the ESP32 as `main.py` and hav
 
 Therefore, we came up with the following idea. By saving the different programs on the ESP32 as seperate modules, the remote side can choose which module it should load. The loaded module populates the list of remote commands with the functions that it implements. After that the remote commands can be `call`-ed by the remote side. In this way the remote side can decide at run time which commands it can execute on the ESP32.
 
-# Usage of remote loading of modules
+# How to remotely load a module?
 We illustrate the way this works by giving an example.
 
-The ESP32 runs the following brief commands in its `main.py` program:
+The ESP32 runs the following commands in its `main.py` program:
 
 ```
 from uartremote import *
-ur=UartRemote() # initialize uartremote on default uart and default uart pins
-ur.loop() # start listing for commands received from the remote instance
+ur=UartRemote()         # initialize uartremote on default uart and default uart pins
+ur.loop()               # start listing for commands received from the remote instance
 ```
 
 Furthermore, on the ESP32 we have the following code saved as the module `test.py`:
