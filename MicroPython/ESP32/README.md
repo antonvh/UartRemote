@@ -10,7 +10,7 @@ We illustrate the way this works by giving an example.
 
 The ESP32 runs the following commands in its `main.py` program:
 
-```
+```python
 from uartremote import *
 ur=UartRemote()         # initialize uartremote on default uart and default uart pins
 ur.loop()               # start listing for commands received from the remote instance
@@ -18,7 +18,7 @@ ur.loop()               # start listing for commands received from the remote in
 
 Furthermore, on the ESP32 we have the following code saved as the module `test.py`:
 
-```
+```python
 # module test.py
 
 def led(n,r,g,b):
@@ -40,7 +40,7 @@ When the module above is imported, the function `add_commands` will add the two 
 
 On the remote instance (e.g. the Lego robot, where the ESP32 is connected to port 'A'), we use the following code to remotely import the `test` module:
 
-```
+```python
 # code running on remote instance
 from projects.uartremote import *
 ur=UartRemote('A')
