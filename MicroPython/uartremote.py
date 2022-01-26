@@ -17,8 +17,9 @@ _ESP32=const(0x02)
 _ESP32_S2=const(0x03)
 _ESP8266=const(0x04)
 _SPIKE=const(0x05)
-_H7=const(0x07)
 _MAC=const(0x06)
+_H7=const(0x07)
+_K210=const(0x08)
 
 platforms = {
     'linux':_EV3, # EV3. TODO This might not be precise enough for python3 running on Linux laptops
@@ -28,7 +29,8 @@ platforms = {
     'OpenMV4P-H7':_H7,
     'OpenMV3-M7':_H7,
     'LEGO Learning System Hub':_SPIKE,
-    'darwin':_MAC
+    'darwin':_MAC,
+    'MaixPy':_K210,
 }
 _platform = platforms[sys.platform]
 del(platforms)
@@ -70,6 +72,11 @@ elif _platform==_EV3:
     from utime import sleep_ms
     from pybricks.iodevices import UARTDevice
     from pybricks.parameters import Port
+elif _platform==_K210:
+    from fpioa_manager import fm
+    from machine import UART
+    from utime import sleep_ms
+    from uos import dupterm
 elif _platform==_H7:
     from machine import UART
     from utime import sleep_ms
@@ -90,10 +97,11 @@ class UartRemote:
     Use to communicate via REPL or some kind of RPC command loop with other devices.
     """
     commands={}
+    command_array=[]
     command_formats={}
     version="Nightly"
 
-    def __init__(self,port=0,baudrate=115200,timeout=1500,debug=False,esp32_rx=0,esp32_tx=26):
+    def __init__(self,port=0,baudrate=115200,timeout=1500,debug=False,rx_pin=18,tx_pin=19):
         # Baud rates of up to 230400 work. 115200 is the default for REPL.
         # Timeout is the time the lib waits in a receive_comand() after placing a call().
         self.local_repl_enabled = False
@@ -116,9 +124,13 @@ class UartRemote:
             # self.uart = UART(port,baudrate=baudrate,timeout=timeout,timeout_char=timeout,rxbuf=100)
         elif _platform==_ESP32:
             if not self.port: self.port = 1
-            self.uart = UART(port,rx=esp32_rx,tx=esp32_tx,baudrate=baudrate,timeout=1)
+            self.uart = UART(self.port,rx=rx_pin,tx=tx_pin,baudrate=baudrate,timeout=1)
         elif _platform==_ESP32_S2:
             self.uart = UART(board.TX,board.RX,baudrate=baudrate,timeout=0.5)
+        elif _platform==_K210:
+            fm.register(34,fm.fpioa.UART2_RX,force=True)
+            fm.register(35,fm.fpioa.UART2_TX,force=True)
+            self.uart=UART(UART.UART2,115200,8,1,0,timeout=1000,read_buf_len=4096)
         elif _platform==_SPIKE:
             self.reads_per_ms = 10
             if type(port) == str:
@@ -136,6 +148,11 @@ class UartRemote:
         self.add_command(self.disable_repl_locally, name='disable repl')
         self.add_command(self.echo, 'repr', name='echo')
         self.add_command(self.raw_echo, name='raw echo')
+        self.add_command(self.module,name='module')
+        self.add_command(self.get_num_commands,'repr',name='get_num_commands')
+        self.add_command(self.get_nth_command,'repr',name='get_nth_command')
+        
+        
 
     def echo(self, *s):
         if self.DEBUG: print(s)
@@ -173,6 +190,7 @@ class UartRemote:
             name=repr(command_function).split(" ")[1]
         self.commands[name]=command_function
         self.command_formats[name]=format
+        self.command_array.append(name)
 
     @staticmethod
     def encode(cmd,*argv):
@@ -250,7 +268,7 @@ class UartRemote:
             return len(self.unprocessed_data)
         elif _platform==_EV3:
             return self.uart.waiting()
-        elif _platform==_ESP32 or _platform==_ESP8266:
+        elif _platform==_ESP32 or _platform==_ESP8266 or _platform==_K210:
             return self.uart.any()
         elif _platform==_H7:
             # H7 can return 0x00,0x00 or 0x00 instead of no bytes
@@ -503,4 +521,30 @@ class UartRemote:
                 return value.strip()
             else:
                 return
+
+    def module(self,mod_bytes):
+    # load module in mod_bytes; this method is remotely 'call'-ed 
+    # the module name is passed as as type bytes
+    module=mod_bytes.decode('utf-8')
+    # import module
+        exec('import '+module)
+    # mod_objects points to the newly imported module
+        mod_object=eval(module)
+    # call the function add_commands within the imported module
+        mod_obj.add_commands(self)
+
+        
+    def add_module(self,module):
+    # this method loads a module on the remote system
+        l=len(module)
+        self.call('module','%ds'%l,module.encode('utf-8'))
+
+    def get_num_commands(self):
+        return len(self.command_array)
+
+    def get_nth_command(self,n):
+        if n<len(self.command_array):
+            return self.command_array[n]
+        else:
+            raise UartRemoteError("get_nth_command: index exceeds number of commands")
 
