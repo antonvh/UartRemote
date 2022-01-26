@@ -525,12 +525,12 @@ class UartRemote:
     def module(self,mod_bytes):
     # load module in mod_bytes; this method is remotely 'call'-ed 
     # the module name is passed as as type bytes
-    module=mod_bytes.decode('utf-8')
-    # import module
+        module=mod_bytes.decode('utf-8')
+        # import module
         exec('import '+module)
-    # mod_objects points to the newly imported module
+        # mod_objects points to the newly imported module
         mod_object=eval(module)
-    # call the function add_commands within the imported module
+        # call the function add_commands within the imported module
         mod_obj.add_commands(self)
 
         
