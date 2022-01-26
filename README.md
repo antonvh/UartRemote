@@ -1,76 +1,54 @@
 # Remote UART library: uartremote.py
 
-This is a library for robust, near real-time communication between two UART devices. We developed it with LEGO EV3, SPIKE Prime and other MicroPython (ESP) modules. The library has the following properties:
+This is a library for robust, near real-time communication between two UART devices. We developed it on python 3.9 with LEGO EV3, SPIKE Prime and other MicroPython (ESP/STM32) modules. The library has the following properties:
 - It is fast enough to read sensor data at 30-50Hz.
 - It is fully symmetrical, so master and slave can have the same import.
 - It includes a RAW REPL mode to upload code to a slave module. This means you can develop code for both modules in one file.
 - It is implemented in MicroPython and Arduino/C code. With arduino code, much higher sensor reading speeds are possible, but flashing is a bit less user friendly.
 - The library has a command loop to wait and listen for calls. That loop is customizable and non-blocking so you can add your own code to it.
 - The C-struct-like encoding is included in the payload, so the other side always knows how to decode it.
+- Compatable with most RS232-TTL 3.3v/5v converter board to further expand i/o possibilities.
 
 Usage: you can use all of parts of this library for your own projects. Please give us credits at least. We put a lot spare time in this. You are also welcome to contribute. Please fork and PR.
 
-## Micropython
+# Installation
 
-Uniform library that works on standard MicroPython platforms, the EV3 and the Spike. See [example code and usage in the MicroPython subdirectory](MicroPython/README.md).
+## EV3
+Copy uartremote.py into your project directory or library directory for `uartremote import *`. this also is the same for using in python3 on desktopOS
 
 ## Arduino
 
-The same UartRemote library is also implemented for Arduino.
+The same UartRemote library is also implemented for [Arduino](https://github.com/antonvh/UartRemote/tree/master/Arduino/UartRemote).
 
-# Installation
-## ESP8266
-Copy the [compiled library](Libraries/UartRemote/MicroPython/ESP8266) to the board with webREPL
+## Micropython
 
-## SPIKE Prime and Robot Inventor
-Copy the [installer script](Libraries/UartRemote/MicroPython/SPIKE/install_uartremote.py) in an empty project inside the LEGO software and run the script ones. You can discard the script afterwards.
+Uniform library that works on standard MicroPython platforms, including the EV3 and the Spike. See further platforms in the [microPython](MicroPython/README.md) directory.
 
-## ESP32
-Copy the plain python file or the compiled library over to the board with rshell. You can get rshell via `pip3 install rshell`. Then go `rshell -p /dev/tty.usbserial-141230 -b 115200 --editor nano`. You can edit /pyboard/boot.py while you're at it, to configure your wifi connection.
+## STM32(SPIKE Prime and Robot Inventor 51515)
+Copy the [installer script](Libraries/UartRemote/MicroPython/SPIKE/install_uartremote.py) in an empty project inside the LEGO app and run the script once. You can discard the script afterwards. Alternativly you can use rshell, below. files in the /projects folder are not removed.
 
-To copy the library, do this:
-`cp Libraries/UartRemote/MicroPython/uartremote.py /pyboard/`
+## ESP8266 with rshell
+on ESP82 Copy the [ESP8266 library](Libraries/UartRemote/MicroPython/ESP8266) to the board with webREPL or rshell>
 
-# Use cases
-## Connecting a micropython AI/Computer vision camera to a robotic platform
-On the camera you can use code like this:
-```python
-from uartremote import *
+Copy the plain .py file or the compiled library .mpy into your device
+- You can get rshell via: `pip3 install rshell`
+- If you have a *single device* this will connect: `rshell -p $(ls /dev/tty.usb*) -b 115200 --editor nano`
+- ...otherwise find your device with: `ls /dev/tty.usb*` 
+- use your *own* desired modem/serial: `rshell -p /dev/tty.usbserial-141230 -b 115200 --editor nano`
+- Your device is now mounted in rshell> as /pyboard
+- Use rshell's cp To copy the library >`cp Libraries/UartRemote/MicroPython/uartremote.py /pyboard/`
 
-ur = UartRemote()
+Alternativly: you can use some IDE's for GUI File managment, such as [ThonnyIDE](https://thonny.org) (win/osx/raspi) or [Mu IDE](https://codewith.mu) if you cannot use rshell command line.
 
-while(True):
-    img = sensor.snapshot()
-    # Your image processing and manipulation code goes here...
-    blob_location = [12,24]
+You can edit /pyboard/boot.py while you're at it, to configure your [wifi connection](https://github.com/antonvh/LMS-uart-esp/wiki/Connecting-via-webrepl) for LEGO/STM32 using a [breakout board](https://antonsmindstorms.com/?s=wifi) 
 
-    if ur.available(): # Some bytes have come in over serial
-        command, value = ur.receive_command()
-        if command == 'blob':
-            ur.ack_ok(command, blob_location)
-```
+# Use Cases / Examples
 
-On the robot your code looks like this:
-```python
-from projects.uartremote import *
+For more examples see [example_scripts.py](example_scripts.py) and further demo and example scripts in the platform directories.
 
-ur = UartRemote('E')
+## Communication Master/Slave Robot  - LEGO(STM32) & micropythonESP8266
 
-while True:
-    ack, payload = ur.call('blob')
-    if ack == 'bloback': # Original command + 'ack'
-        # payload is a python list object, like the one you sent on the other side
-        blob_location = payload 
-        # Do something with robot motors
-    else:
-        # Unexpected thinges happened. Stop.
-        print(ack, payload)
-        port.A.motor.pwm(0)
-        port.B.motor.pwm(0)
-```
-
-## Executing code on a separate hardware slave device
-On the master robot, your code looks like this
+On the Lego robot(master) your code looks like you may need to change your library directory `mpy-robot-tools`:
 ```python
 from projects.uartremote import *
 
@@ -84,7 +62,8 @@ while True:
     print("Running at {}fps on the ESP8266 board".format(fps))
 ```
 
-On the slave esp8266 board, your code looks like this
+
+The code for the `boot.py` file on the slave esp8266 with neopixle and pixelhelpers libraries and hardware would look like this:
 ```python
 from uartremote import *
 from neopixel import NeoPixel
@@ -122,63 +101,176 @@ while True:
     duration = utime.ticks_diff(utime.ticks_ms(), start)
     fps = 1000/duration
 ```
+In this example two functions are defined using add_command `get_fps`, and `set_color`. 
 
-# Packet format
-When a command with its accompanying values is transmitted over the Uart, the following packet format is used:
+These functions are called each time that `get_fps`, or `set_color` is received as a command from the master (LEGO in this example).  Parameters for the functions are extracted from the command, and return values, are attached to the response.
 
-|delimiter|total len|command len|command|format len| format| data|delimiter|
-|---------|---------|-----------|-------|----------|-------|-----|---------|
-| `<`      |  `ln`   | `lc`    | `cmd` | `lf`    | `f` | binary data | `>`|
 
-with
-- `ln` the length of the total packet encoded as a single byte,
-- `lc` the length of the command string `<cmd>` as a single byte,
-- `cmd` the command specified as a string,
-- `lf` the length of the format string
-- `f` the Format encapsulation to pack the values; This can be `repr` for encapsulating arbitrary objects, `raw` for no encapsulation, or a Python struct format string.
-- `data` a number of values encapsulated according to `f`.
+## Communication Master, micropython  - OpenMV & Lego Robot
+On the micropython/OpenMV camera you can use code like this:
+```python
+from uartremote import *
 
-When the method
+ur = UartRemote()
 
-`ur.send_command('test','repr',[1,2,3,4,5])`
-is used, the following packet will be transmitted over the line:
+while(True):
+    img = sensor.snapshot()
+    # Your image processing and manipulation code goes here...
+    blob_location = [12,24]
 
-```b'<b'\x1c\x04test\x04repr([1, 2, 3, 4, 5],)>'```
+    if ur.available(): # Some bytes have come in over serial
+        command, value = ur.receive_command()
+        if command == 'blob':
+            ur.ack_ok(command, blob_location)
+```
+## Communication Slave, micropython  - LEGO(STM32) & OpenMV Robot
+On the Lego robot your code looks like you may need to change your library directory `mpy-robot-tools`:
+```python
+from projects.uartremote import *
 
-## Format Option 1: python struct.pack
-This option interpretes the Format string `f` as the format string of the `struct.pack/unpack` method (see https://docs.python.org/3/library/struct.html), for example 
+ur = UartRemote('E')
 
-```send_command('test_struct','3b3s1f',1,2,3,"ale",1.3)```.
+while True:
+    ack, payload = ur.call('blob')
+    if ack == 'bloback': # Original command + 'ack'
+        # payload is a python list object, like the one you sent on the other side
+        blob_location = payload 
+        # Do something with robot motors
+    else:
+        # Unexpected thinges happened. Stop.
+        print(ack, payload)
+        port.A.motor.pwm(0)
+        port.B.motor.pwm(0)
+```
 
-This is the fastest method (1ms) but is limited to c-types, like int, unsigned int etc...
+## Communication Master, micropython  - ESP8266
+Here the devices master(ESP8266) the ESP8266 is the one sending the commands 
 
-## Format Option 2: repr/pickle
-This uses the string representation of data, `repr()` to encode it. Then `eval()` is used on the receiving end.
+The code for the `boot.py` file for master esp8266:
+```python
+def led(v):
+    print('led')
+    for i in v:
+        print(i)
+    
+def imu():
+    return(12.3,11.1,180.0)
 
-`ur.encode('test_command', 'repr', [[1,2],[3,4]])`
+def grid(v):
+    addr=v
+    a=[20,21,22,23,24,25,26,27,28]
+    return(a[addr%9])
 
-will be encoded as:
+from uartremote import *
+ur=UartRemote()
+ur.add_command(led)
+ur.add_command(imu,'3f')
+ur.add_command(grid,'B')
+ur.loop()
+```
+Here three different example functions are used: `led` which takes a value, but does not return a value, `imu` which returns a value, but does not take a value, and `grid` wich takes a values and returns a value.
+In the `add_command` method, the second argument is the `formatstring`, defining the format of the return argument9s).
 
-`b'%\x0ctest_command\x04repr([[1, 2], [3, 4]],)'`
+## Communication Slave Rx Mode  - LEGO(STM32)
+On the Lego Robot the following code is used (e.g. on the SPIKE):
+```python
+from projects.uartremote import *
+u=UartRemote("A" debug=True)
 
-Here's the power of repr:
+```
+In *repl console* the following examples result in:
 
-`ur.encode('test_command','repr',[[1,2],[3,str],[len,True],[2+3]])`
+        >>> u.call('led','repr',[1,2,3,4])
+        ('ledack', b'ok')
+        >>> u.call('imu')
+        ('imuack', (12.3, 11.1, 180.0))
+        >>> u.call('grid','B',1)
+        ('gridack', 21)
+        >>> u.call('unknown')
+        ('err', 'Command not found: unkown')
 
-becomes
+it will also be print additional debug assistance to the Lego app console.To further handle this data would be up to your requirements.
 
-`b"W\x0ctest_command\x04repr([[1, 2], [3, <class 'str'>], [<built-in function len>, True], [5]],)"`
 
-This is slower (7ms) and incompatible with Arduino but it is more flexible.
+The following example is used to convert the strings back to a readable format and output to display (e.g. on the SPIKE):
 
-## Format Option 3: raw bytes
-This is the fastest option of all, but you'll have to do your own decoding/encoding.
+```python
+from utime import sleep_ms
+from projects.uartremote import *
+serial = UartTTL("A")
 
-`ur.encode('test_command','raw',b'abcd')`
+if True:
+    serial_buffer = serial.read().decode('UTF-8')
+    print(seial_buffer)
+    sleep_ms(1000)
+```
 
-is encoded as:
+## Communication Master Tx Mode  - LEGO(STM32)
 
-`b'\x15\x0ctest_command\x03rawabcd'`
+On the master (e.g. Lego SPIKE):
+```python
+from projects.uartremote import *
+u=UartRemote("A")
+u.call('imu')
+u.call('grid','B',10)
+u.call('led','repr',[2,100,100,100]) # use repr for pasing an array
+```
+In this example two functions are defined `imu`, `led` and `grid`. These functions are called each time that `imu`, `led` or `grid` is received as a command.  Parameters for the functions are extracted from the command, and return values, are attached to the respons.
+
+
+## Simultaneous sending and receiving
+
+The library allows for simultaneously sending and receiving commands from both sides. Below the code for both sides is shown. In this example we use the Lego and the ESP8266 board.
+
+### On the Lego SPIKE(STM32):
+```python
+import time
+from projects.uartremote import *
+    
+def imu():
+    return(12.3,11.1,180.0)
+
+u=UartRemote("A")
+u.add_command(imu,'3f')
+
+t_old=time.ticks_ms()+2000                              # wait 2 seconds before starting
+q=u.flush()                                             # flush uart rx buffer
+while True:
+    if u.available():                                   # check if a command is available
+        u.process_uart()
+    if time.ticks_ms()-t_old>1000:                      # send a command every second
+        t_old=time.ticks_ms()
+        print("send led")                               # send 'led' command with data
+        print("recv=",u.call('led','repr',[1,2,3,4]))   # use repr for array
+```
+
+### On the micropython ESP8266:
+```python
+import time
+from uartremote import *
+u=UartRemote(0)
+
+def led(v):
+    print('led')
+    for i in v:
+        print(i)
+
+u.add_command(led)
+
+
+t_old=time.ticks_ms()+2000                      # wait 2 seconds before starting
+q=u.flush()                                     # flush uart rx buffer
+while True:
+    if u.available():                           # check if a command is available
+        u.process_uart()
+    if time.ticks_ms()-t_old>1000:              # send a command every second
+        t_old=time.ticks_ms()
+        print("send imu")
+        print("recv=",u.call('imu'))    # send 'imu' command & receive result
+```
+
+# Further Documentation on packet structure and API
+moved to its own resource in [documentaton.md](documentation.md)
 
 # To do, roadmap
 - Add wireless networking using sockets, rfcomm, ble etc...
