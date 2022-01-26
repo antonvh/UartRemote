@@ -190,7 +190,8 @@ class UartRemote:
             name=repr(command_function).split(" ")[1]
         self.commands[name]=command_function
         self.command_formats[name]=format
-        self.command_array.append(name)
+        if name not in self.command_array:
+            self.command_array.append(name)
 
     @staticmethod
     def encode(cmd,*argv):
@@ -523,15 +524,15 @@ class UartRemote:
                 return
 
     def module(self,mod_bytes):
-    # load module in mod_bytes; this method is remotely 'call'-ed 
-    # the module name is passed as as type bytes
-    module=mod_bytes.decode('utf-8')
-    # import module
+        # load module in mod_bytes; this method is remotely 'call'-ed 
+        # the module name is passed as as type bytes
+        module=mod_bytes.decode('utf-8')
+        # import module
         exec('import '+module)
-    # mod_objects points to the newly imported module
+        # mod_objects points to the newly imported module
         mod_object=eval(module)
-    # call the function add_commands within the imported module
-        mod_obj.add_commands(self)
+        # call the function add_commands within the imported module
+        mod_object.add_commands(self)
 
         
     def add_module(self,module):
@@ -548,3 +549,10 @@ class UartRemote:
         else:
             raise UartRemoteError("get_nth_command: index exceeds number of commands")
 
+    def get_remote_commands(self):
+        cmds=[]
+        n_cmds=self.call('get_num_commands')
+        for i in range(n_cmds):
+            ack,cmd=self.call('get_nth_command','B',i)
+            cmds.append(cmd)
+        return cmds
