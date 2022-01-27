@@ -130,7 +130,7 @@ class UartRemote:
         elif _platform==_K210:
             fm.register(34,fm.fpioa.UART2_RX,force=True)
             fm.register(35,fm.fpioa.UART2_TX,force=True)
-            self.uart=UART(UART.UART2,115200,8,1,0,timeout=1000,read_buf_len=4096)
+            self.uart=UART(UART.UART2,baudrate,8,1,0,timeout=1000,read_buf_len=4096)
         elif _platform==_SPIKE:
             self.reads_per_ms = 10
             if type(port) == str:
@@ -536,7 +536,7 @@ class UartRemote:
 
         
     def add_module(self,module):
-    # this method loads a module on the remote system
+        # this method loads a module on the remote system
         l=len(module)
         self.call('module','%ds'%l,module.encode('utf-8'))
 
