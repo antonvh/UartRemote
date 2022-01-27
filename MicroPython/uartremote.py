@@ -140,9 +140,15 @@ class UartRemote:
             self.uart.mode(1)
             sleep_ms(300)# wait for all duplex methods to appear
             self.uart.baud(baudrate) # set baud rate
+        elif _platform==_MAC: #cheat about linix E3
+            if type(port) == str: #should also check for '/tty'
+                self.port = port
+                self.uart = serial.Serial(port, baudrate, timeout=1)
+            else:
+                if self.DEBUG:print("usage python3 >>>UartRemote(port=\"/dev/tty.LEGOHubSpikeHub2\")")
         else:
             # Try regular python3 pyserial
-            self.uart = serial.Serial(port, baudrate, timeout=1)
+            if type(port) == str: self.uart = serial.Serial(port, baudrate, timeout=1)
 
         self.add_command(self.enable_repl_locally, name='enable repl')
         self.add_command(self.disable_repl_locally, name='disable repl')
@@ -269,6 +275,8 @@ class UartRemote:
             return len(self.unprocessed_data)
         elif _platform==_EV3:
             return self.uart.waiting()
+        elif _platform==_MAC:
+            return self.uart.inWaiting()
         elif _platform==_ESP32 or _platform==_ESP8266 or _platform==_K210:
             return self.uart.any()
         elif _platform==_H7:
