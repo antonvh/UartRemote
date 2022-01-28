@@ -113,7 +113,7 @@ class UartRemote:
         self.baudrate=baudrate # store baudrate for repl init
         if _platform==_EV3:
             if not self.port: self.port=Port.S1
-            self.uart = UARTDevice(port,baudrate=baudrate,timeout=1)
+            self.uart = UARTDevice(port, +'baudrate='+ baudrate,timeout=1)
         elif _platform==_H7:
             self.reads_per_ms = 20
             if not self.port: self.port=3
@@ -124,13 +124,16 @@ class UartRemote:
             # self.uart = UART(port,baudrate=baudrate,timeout=timeout,timeout_char=timeout,rxbuf=100)
         elif _platform==_ESP32:
             if not self.port: self.port = 1
-            self.uart = UART(self.port,rx=rx_pin,tx=tx_pin,baudrate=baudrate,timeout=1)
+            # self.enable_repl_locally()
+            self.uart = UART(self.port,+'baudrate='+ baudrate,rx=rx_pin,tx=tx_pin,timeout=1)
         elif _platform==_ESP32_S2:
-            self.uart = UART(board.TX,board.RX,baudrate=baudrate,timeout=0.5)
+            # self.enable_repl_locally()
+            self.uart = UART(board.TX,board.RX, +'baudrate='+ baudrate,timeout=0.5)
         elif _platform==_K210:
             fm.register(34,fm.fpioa.UART2_RX,force=True)
             fm.register(35,fm.fpioa.UART2_TX,force=True)
-            self.uart=UART(UART.UART2,115200,8,1,0,timeout=1000,read_buf_len=4096)
+            #self.enable_repl_locally()
+            self.uart=UART(UART.UART2,baudrate,8,1,0,timeout=1000,read_buf_len=4096)
         elif _platform==_SPIKE:
             self.reads_per_ms = 10
             if type(port) == str:
@@ -140,9 +143,15 @@ class UartRemote:
             self.uart.mode(1)
             sleep_ms(300)# wait for all duplex methods to appear
             self.uart.baud(baudrate) # set baud rate
+        elif _platform==_MAC: #cheat about linix E3
+            if type(port) == str: #should also check for '/tty'
+                self.port = port
+                self.uart = serial.Serial(port, baudrate, timeout=1)
+            else:
+                if self.DEBUG:print("usage python3 >>>UartRemote(port=\"/dev/tty.LEGOHubSpikeHub2\")")
         else:
             # Try regular python3 pyserial
-            self.uart = serial.Serial(port, baudrate, timeout=1)
+            if type(port) == str: self.uart = serial.Serial(port, baudrate, timeout=1)
 
         self.add_command(self.enable_repl_locally, name='enable repl')
         self.add_command(self.disable_repl_locally, name='disable repl')
@@ -269,6 +278,8 @@ class UartRemote:
             return len(self.unprocessed_data)
         elif _platform==_EV3:
             return self.uart.waiting()
+        elif _platform==_MAC:
+            return self.uart.inWaiting()
         elif _platform==_ESP32 or _platform==_ESP8266 or _platform==_K210:
             return self.uart.any()
         elif _platform==_H7:
@@ -536,7 +547,7 @@ class UartRemote:
 
         
     def add_module(self,module):
-    # this method loads a module on the remote system
+        # this method loads a module on the remote system
         l=len(module)
         self.call('module','%ds'%l,module.encode('utf-8'))
 

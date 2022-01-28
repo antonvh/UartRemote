@@ -8,6 +8,7 @@ This is a library for robust, near real-time communication between two UART devi
 - The library has a command loop to wait and listen for calls. That loop is customizable and non-blocking so you can add your own code to it.
 - The C-struct-like encoding is included in the payload, so the other side always knows how to decode it.
 - Compatable with most RS232-TTL 3.3v/5v converter board to further expand i/o possibilities.
+-remote modiule importing
 
 Usage: you can use all of parts of this library for your own projects. Please give us credits at least. We put a lot spare time in this. You are also welcome to contribute. Please fork and PR.
 
@@ -23,6 +24,10 @@ The same UartRemote library is also implemented for [Arduino](https://github.com
 ## Micropython
 
 Uniform library that works on standard MicroPython platforms, including the EV3 and the Spike. See further platforms in the [microPython](MicroPython/README.md) directory.
+
+## ESP32
+
+remote module loading via REPL [details here](/ibraries/UartRemote/MicroPython/ESP32/README.md)
 
 ## STM32(SPIKE Prime and Robot Inventor 51515)
 Copy the [installer script](Libraries/UartRemote/MicroPython/SPIKE/install_uartremote.py) in an empty project inside the LEGO app and run the script once. You can discard the script afterwards. Alternativly you can use rshell, below. files in the /projects folder are not removed.

@@ -138,3 +138,9 @@ Loops the `UartRemote.wait-for_command()` command.
 
 Adds a command `command` to the dictionary of `UartRemote.commands` together with a function name `command_function`. Optionally, if the `command_function` returns parameters, the `format_string` describes the type of the returned parameters. If the `command_function` does not return a value, the `format_string` is omirted. The dictionary with commands is used by the `UartRemote.wait_for_command()` method to call the function as defined upon receiving a specific command. As an argument the `data` that is received is used.
 
+### `UartRemote.add_module(module_name)`
+This command send a command to the other side instructing it to import the module with name `module_name`. The `module_name` argument has type string. After importing the module, the remote side calls the function `<module>.add_commands()`. This is a function that you should add to the modules you want to remotely import. [continued here](/ibraries/UartRemote/MicroPython/ESP32/README.md)
+
+### `UartRemote.get_remote_commands()`
+This command returns an array containing the commands available by the remote uartremote. You will see a number of default built-in commands such as `echo`. This method can be used to query the commands that are added by remotely importing a new module. [continued here](/ibraries/UartRemote/MicroPython/ESP32/README.md)
+
