@@ -1,2 +1,4 @@
 .DS_Store
 .key
+*.pyc
+__pycache__*
