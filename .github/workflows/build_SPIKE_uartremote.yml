@@ -20,9 +20,9 @@ jobs:
       run: pip install mpy-cross
     - name: run python script
       run: |
-        cd UartRemote/MicroPython/SPIKE
+        cd MicroPython/SPIKE
         python create_install_file.py
     - uses: actions/upload-artifact@v2
       with:
         name: install_uartremote.py
-        path: UartRemote/MicroPython/SPIKE/install_uartremote.py
+        path: MicroPython/SPIKE/install_uartremote.py
