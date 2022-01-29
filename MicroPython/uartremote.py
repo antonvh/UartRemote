@@ -113,7 +113,7 @@ class UartRemote:
         self.baudrate=baudrate # store baudrate for repl init
         if _platform==_EV3:
             if not self.port: self.port=Port.S1
-            self.uart = UARTDevice(port, +'baudrate='+ baudrate,timeout=1)
+            self.uart = UARTDevice(port, baudrate=baudrate,timeout=1)
         elif _platform==_H7:
             self.reads_per_ms = 20
             if not self.port: self.port=3
@@ -125,10 +125,10 @@ class UartRemote:
         elif _platform==_ESP32:
             if not self.port: self.port = 1
             # self.enable_repl_locally()
-            self.uart = UART(self.port,+'baudrate='+ baudrate,rx=rx_pin,tx=tx_pin,timeout=1)
+            self.uart = UART(self.port,baudrate=baudrate,rx=rx_pin,tx=tx_pin,timeout=1)
         elif _platform==_ESP32_S2:
             # self.enable_repl_locally()
-            self.uart = UART(board.TX,board.RX, +'baudrate='+ baudrate,timeout=0.5)
+            self.uart = UART(board.TX,board.RX, baudrate=baudrate,timeout=0.5)
         elif _platform==_K210:
             fm.register(34,fm.fpioa.UART2_RX,force=True)
             fm.register(35,fm.fpioa.UART2_TX,force=True)
