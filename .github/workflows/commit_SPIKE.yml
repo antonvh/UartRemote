@@ -1,0 +1,33 @@
+name: commit SPIKE
+
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+
+jobs:
+  uartremote:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: pip install mpy-cross
+      run: pip install mpy-cross
+    - name: Initialize micropython-ulab submodule
+      run: git submodule update --init --recursive UartRemote
+    - name: run python script
+      run: |
+        cd UartRemote/MicroPython/SPIKE
+        python create_install_file.py
+    - name: Commit report
+      run: |
+          git config --global user.name 'Ste7an'
+          git config --global user.email 'ste7anste7an@users.noreply.github.com'
+          git add .
+          git commit -m "Updated SPIKE uartremote install script"
+          git push
