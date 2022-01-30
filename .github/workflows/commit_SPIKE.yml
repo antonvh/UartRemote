@@ -22,7 +22,7 @@ jobs:
       run: git submodule update --init --recursive UartRemote
     - name: run python script
       run: |
-        cd UartRemote/MicroPython/SPIKE
+        cd MicroPython/SPIKE
         python create_install_file.py
     - name: Commit report
       run: |
