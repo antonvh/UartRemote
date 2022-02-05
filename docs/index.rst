@@ -35,3 +35,10 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+Status
+******
+
+.. image:: https://readthedocs.org/projects/uartremote/badge/?version=latest
+:target: https://uartremote.readthedocs.io/en/latest/?badge=latest
+:alt: Documentation Status
