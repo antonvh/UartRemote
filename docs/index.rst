@@ -40,5 +40,5 @@ Status
 ******
 
 .. image:: https://readthedocs.org/projects/uartremote/badge/?version=latest
-:target: https://uartremote.readthedocs.io/en/latest/?badge=latest
-:alt: Documentation Status
+  :target: https://uartremote.readthedocs.io/en/latest/?badge=latest
+  :alt: Documentation Status
