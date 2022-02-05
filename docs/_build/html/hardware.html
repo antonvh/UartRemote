@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Hardware &#8212; UartRemote  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="LMS ESP32 Pinout" href="pinout.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="hardware">
+<span id="id1"></span><h1>Hardware<a class="headerlink" href="#hardware" title="Permalink to this headline">¶</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>In the picture below an overviwe of the hardware components of the LMS-ESP32 board is given.</p>
+<a class="reference internal image-reference" href="_images/lmsesp32_hardware_overview.jpg"><img alt="Hardware Overview" src="_images/lmsesp32_hardware_overview.jpg" style="width: 1000px;" /></a>
+<p>In the photo shown above, the major components and headers are shown. Below we briefly discuss each of these:</p>
+<ul>
+<li><p>ESP32-WROVER</p>
+<p>This is the microcontroller we use on the board. It is an Esspressif dual core MCU whith the following specifications.
+- dual 240MHZ core
+- 520kB SRAM
+- 4MByte flash memory
+- 4Mbyte PS-RAM</p>
+</li>
+<li><p>power LED</p>
+<p>This LED is connected to the 3.3V power ad will light up when the board is powered.</p>
+</li>
+<li><p>micro USB connector</p>
+<p>Used for connecting the board through the build-in usb-uart convertor and for powering the board with 5V</p>
+</li>
+<li><p>GPIO power header</p>
+<p>This is the header where you connect your hardware such as servo motors , displays and sensors. There are 5V and 3.3V power pins present on the header</p>
+</li>
+<li><p>Groves I2C header</p>
+<p>This is a grove’s connector that can be used to connect I2C devices to the board. The connector uses 3.3V power supply.</p>
+</li>
+<li><p>I2S microphone</p>
+<p>We provide two 3-pin headers for connecting an <cite>INMP441 MEMS microphone</cite>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Microphone is connected using the GPIO pins 27,32 and 33. These Pins are also present on the GPIO header.</p>
+</div>
+</li>
+<li><p>Lego robot connector
+This connector is used to connect the board to your Lego robot. It connects to the 3.3V power, the UART pins and the M+ pin of the robot.</p></li>
+<li><p>Reset button
+This button is connected to the reset signal of the ESP32</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The pinout and maping on ESP32 GPIO pins can be found in the <a class="reference internal" href="pinout.html#pinout"><span class="std std-ref">Pinout</span></a>.</p>
+</div>
+</section>
+<section id="usb-connector">
+<h2>USB connector<a class="headerlink" href="#usb-connector" title="Permalink to this headline">¶</a></h2>
+<p>We provide a micro USB connector for  powering the board and for communicating with UART0 of the ESP32 using a CH340 Uart USB transceiver. The additional circuit with the two transistors Q3 and Q4 allows the programming tool to switch the ESP32 in program mode using the EN and IO0 pins.</p>
+<a class="reference internal image-reference" href="_images/schematic_lmsesp32_usb.jpg"><img alt="USB Schematic" src="_images/schematic_lmsesp32_usb.jpg" style="width: 1000px;" /></a>
+</section>
+<section id="power-supply-of-the-board">
+<h2>Power supply of the board<a class="headerlink" href="#power-supply-of-the-board" title="Permalink to this headline">¶</a></h2>
+<p>When connected to the Lego robot, the board is powered from the robot’s 3.3V power supply. When the board is connected to the USB port of a PC, it will get 5V power from the USB port. The 5V is fed to an LMS1117 power regulator with a 3.3V output used for powering the ESP32.</p>
+<p>When the robot and the USB port are both connected simultaneously, the 3.3V rail will get its power from both the Lego robot as well as from the output of the LMS1117. Because there is only a small difference in these two voltages, there will be no harm done to the board or the lego robot.</p>
+<a class="reference internal image-reference" href="_images/schematic_lmsesp32_power.jpg"><img alt="Hardware Overview" src="_images/schematic_lmsesp32_power.jpg" style="width: 1000px;" /></a>
+<p>For applications that need 5V, such as LED strips or servo motors, we provide 5V outputs on the 14x2 header. This 5V is drawn from hte USB connector when that is connected. For obtaining a stable 5V when the board is only connected to the lego robot, we provide a buck converter that can be added on the board. This buck converts the voltage supplied from the lego robot motor output (which is 8V when the motor power is set to 100%) to 5V in a very efficient way. When powering the board from the robot motor output simultaneously with the USB power, we get two 5V sources: one from the USB connector and one from the output of the buck converter. We estimate the because the voltages are almost the same, no harm willl be done to the board, the lego robot or the USB port.</p>
+</section>
+<section id="gpio-header">
+<h2>GPIO header<a class="headerlink" href="#gpio-header" title="Permalink to this headline">¶</a></h2>
+<p>The GPIO header provides access to 14 GPIO pins of the ESP32 and provides a number of 5V and 3.3V power pins.</p>
+<a class="reference internal image-reference" href="_images/schematic_lmsesp32_gpio_2x14.jpg"><img alt="GPIO header" src="_images/schematic_lmsesp32_gpio_2x14.jpg" style="width: 1000px;" /></a>
+<p>Whe grouped the pins in 3 different regions. The yellow region for connecting servo’s or LED strips pwered with 5V (keep in mind that all the logic pins of the ESP32 are only 3.3V tollerant), the red region for power connections and the green region for access to the GPIO pins.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The GPIO Pins are directly connected to the ESP32 and are not 5V tollerant, so use only 3.3V logic signals.</p>
+</div>
+</section>
+<section id="i2c-grove-connector">
+<h2>I2C Grove connector<a class="headerlink" href="#i2c-grove-connector" title="Permalink to this headline">¶</a></h2>
+<p>We use the standard Grove connector that is used on many i2c sensors. M5Stack Units use them and can directly be connected to the board. Note that the power supply on this port is 3.3V.</p>
+<a class="reference internal image-reference" href="_images/schematic_lmsesp32_grove_i2c.jpg"><img alt="Grove i2c interface" src="_images/schematic_lmsesp32_grove_i2c.jpg" style="width: 1000px;" /></a>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">UartRemote</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="uartremote.html">UartRemote Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pinout.html">LMS ESP32 Pinout</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Hardware</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="pinout.html" title="previous chapter">LMS ESP32 Pinout</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Ste7an.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/hardware.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
