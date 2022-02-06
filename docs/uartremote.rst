@@ -7,6 +7,8 @@ UartRemote Library
 
 This library implements a class with methods that help to set up robust communication between instances running MicroPython which are connected over a UART interface.
 
+The library is available on github:  `UartRemote on GitHub <https://github.com/antonvh/UartRemote>`_.
+
 Platforms
 =========
 
