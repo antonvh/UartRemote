@@ -64,7 +64,7 @@ Methods
 
   Return a non zero value if there is a received command available. Note: on the SPIKE prime, you should use the ``receive_command`` or the ``execute_command``, always with the parameter ``reply=False``, after using the ``available()`` method.
 
-.. method:: UartRemote.send_command(command,*type_data])
+.. method:: UartRemote.send_command(command,*type_data)
 
   Sends a command ``command``. ``*type_data`` are a number of argument that consist of a type defintion ``t``, followed by one ore more variables of the type corresponding with the paramater ``t``.
 
@@ -125,5 +125,40 @@ Methods
 
   Returns an array containing the commands available by the remote uartremote. You will see a number of default built-in commands such as `echo`. This method can be used to query the commands that are added by remotely importing a new module.  See for usage :ref:`Example load module <examples_load_module>`.
 
+Helper Methods
+==============
+
+The methods below are internally called by the methods listed above. You can use these methods should you like to have more low level control.
+
+.. method:: UartRemote.encode(command,*typedata)
+
+  Encodes a command ``command``. ``*type_data`` are a number of arguments that consist of a type defintion ``t``, followed by one ore more variables of the type corresponding with the paramater ``t``.
+
+  For example::
+
+    ur=UartRemote()
+    ur.encode('led_color','4B',1,2,3,4)
+
+    >>> b'\x11\tled_color\x024B\x01\x02\x03\x04'
+
+.. method:: UartRemote.decode(bytestr)
+
+  Decodes an encoded bytestring ``bytestr`` as a tuple with the command and the parameters. If a command without parameters was encoded, the parameters will be ``None``.
+
+  For example::
+
+    ur=UartRemote()
+    ur.decode(b'\x11\tled_color\x024B\x01\x02\x03\x04')
+
+    >>> ('led_color', (1, 2, 3, 4))
+
+.. method:: UartRemote.read_all()
+  
+  Returns all bytes that are available in the UART receive buffer.
+
+.. method:: UartRemote.force_read(self, size=1, timeout=50)
+
+  Some platforms read too fast from the UART and return 0 or None. This method loops until it receives a valid number of ``size`` bytes within ``timeout`` ms.
 
 
+  
