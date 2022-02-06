@@ -32,5 +32,9 @@ Failed hash of base64 input : <hash>
 ```
 Failed hash of .mpy on SPIKE: <hash>
 ```
-
 In both cases you can try again by copying the `install_uartremote.py` again in to an empty Lego Spike project and rerun the code.
+
+## Github Actions for generating SPIKE install file
+Using the aGithub Action workflow, the `uartremote.py` is integrated in the the `install_uartremote.py` script automatically, every time that a change in `uartremote.py` is commited.
+
+
