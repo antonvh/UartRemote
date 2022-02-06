@@ -1,3 +1,11 @@
+# NOTE
+
+[![Documentation Status](https://readthedocs.org/projects/uartremote/badge/?version=latest)](https://uartremote.readthedocs.io/en/latest/?badge=latest)
+      
+
+We are in the process of moving all the documentation to [UartRemote.readthedocs.io](https://uartremote.readthedocs.io/). In the mean time, the documentation that is provided as README's in this GitHub repository, can be outdated. Once the migration is finished, the GitHub will be cleaned.
+
+
 # Remote UART library: uartremote.py
 
 This is a library for robust, near real-time communication between two UART devices. We developed it on python 3.9 with LEGO EV3, SPIKE Prime and other MicroPython (ESP/STM32) modules. The library has the following properties:
