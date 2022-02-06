@@ -19,7 +19,7 @@ We provide an ESP32 firmware image that contains the latest ``uartremote.py`` mo
 Flash this firmware using the ``esptool``::
 
   esptool.py --port <serial_port> erase_flash
-  esptool.py --port <serial_port> --baud 921600 write_flash 0x1000 firmware_ESP32_ULAB_LVGL_SPIRAM_<timestamp?.bin
+  esptool.py --port <serial_port> --baud 921600 write_flash 0x1000 firmware_ESP32_ULAB_LVGL_SPIRAM_<timestamp>.bin
   
 where ``<serial_port>`` is the port to which the esp32 is connected, and ``<timestamp>`` the timestamp at which the firmware was build.
 
