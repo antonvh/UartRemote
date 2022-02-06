@@ -14,9 +14,16 @@ The ``uartremote.py`` needs to be copied to the flash memory of the MicroPython 
 ESP32
 =====
 
-We will be providing an ESP32 firmware image that contains the latest ``uartremote.py`` module integrated as a frozen module in Ste7an's github repository `micropython_ulab_lvgl <https://github.com/ste7anste7an/micropython_ulab_lvgl>`_.
+We provide an ESP32 firmware image that contains the latest ``uartremote.py`` module integrated as a frozen module in Ste7an's github repository `micropython_ulab_lvgl <https://github.com/ste7anste7an/micropython_ulab_lvgl/tree/main/build>`_.
 
-You can manually upload the ``uartremote.py`` file to the flash memory of the ESP32 module using WebREPL, rshell, or one of the IDE's.
+Flash this firmware using the ``esptool``::
+
+  esptool.py --port <serial_port> erase_flash
+  esptool.py --port <serial_port> --baud 921600 write_flash 0x1000 firmware_ESP32_ULAB_LVGL_SPIRAM_<timestamp?.bin
+  
+where ``<serial_port>`` is the port to which the esp32 is connected, and ``<timestamp>`` the timestamp at which the firmware was build.
+
+For other firmwares, you can manually upload the ``uartremote.py`` file to the flash memory of the ESP32 module using WebREPL, rshell, or one of the IDE's.
 
 
 LEGO SPIKE Prime and Robot Inventor 51515
