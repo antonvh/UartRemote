@@ -4,6 +4,13 @@
 Examples
 ========
 
+
+
+.. _examples_basic_uartremote
+
+Basic encoding
+
+
 .. _examples_load_module:
 
 Remote module loading

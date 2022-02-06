@@ -132,6 +132,11 @@ Helper Methods
 
 The methods below are internally called by the methods listed above. You can use these methods should you like to have more low level control.
 
+.. py:data:: Uartremote.command
+
+  Dictionary with the mapping of command name to corresponding functions.
+  
+
 .. method:: UartRemote.encode(command,*typedata)
 
   Encodes a command ``command``. ``*type_data`` are a number of arguments that consist of a type defintion ``t``, followed by one ore more variables of the type corresponding with the paramater ``t``.
