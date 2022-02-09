@@ -8,7 +8,13 @@
 #include <cstdio>
 #include <iostream>
 #include <unordered_map>
-// #include "packunpack.h"
+
+extern "C" {
+#include "struct.h"
+}
+
+// https://github.com/svperbeast/struct
+
 #define RXD1 18
 #define TXD1 19
 
@@ -18,39 +24,19 @@
   #define UART Serial1
 #endif
 
-enum datatype { t_int, t_byte, t_float }; // t_char_array,
 
-
- struct variable {
-    void* data;
-    datatype data_type;
-    int size; // size of the array, or 0 if this is not an array
-}; 
-
- struct unpackresult {
-    variable* vars;
-    int size; 
-    // variable& operator[](int i) {
-    //     return vars[i];
-    // }
-
-    ~unpackresult() {
-        delete[] (char*)vars[size].data;
-        delete[] vars;
-    }
-};
-
-struct packresult {
-    char* data;
-    int size; 
-    ~packresult() {
-        delete[] data;
+struct Arguments {
+    void* buf;
+    const char* fmt;
+    int error;
+    template<typename... Args> friend void unpack(const Arguments& a, Args... args) {
+        struct_unpack(a.buf,a.fmt, args...);
     }
 };
 
 struct cmd_map{
-  char* cmd;
-  void (*function) (unpackresult&);
+  const char* cmd;
+  void (*function) (Arguments);
 }  ;
 
 
@@ -61,25 +47,27 @@ class UartRemote
 
     UartRemote();
 
-    void getvariables(unpackresult& args,  ...);
-
-    void parseformat(const char* format, int& count, int& totalsize);
-    unpackresult unpack(const char* format, const char* data);
-    packresult vpack(const char* format, va_list list);
-    packresult pack(const char* format, ...);
     int available();
     unsigned char readserial1();
     void flush();
-    void command(char cmd[],unpackresult& rcvunpack);
-    void send(const char* cmd, const char* format, ... );
-    unpackresult receive(char* cmd);
-    void add_command(char * cmd,  void (*func)(unpackresult&) );
+    Arguments pack( unsigned char* buf, const char* format, ...);
+    // template<typename... Args> Arguments pack( const char* format, Args... args);
+    void command(const char* cmd,Arguments rcvunpack);
+    void send_command(const char* cmd, const char* format, ...);
+    void testsend(const char* cmd,unsigned char* buf, const char* format, ...);
+    
+
+    Arguments receive_command(char* cmd);
+    int receive_execute();
+    Arguments testreceive(char* cmd, unsigned char* buf);
+    Arguments call(const char* cmd, const char* format, ...);
+    void add_command(const char * cmd,  void (*func)(Arguments) );
 
   cmd_map cmds[20];
   int nr_cmds;
 
   private:
-  char data_buf[400];
+   char data_buf[256];
   char format[40];
 };
 

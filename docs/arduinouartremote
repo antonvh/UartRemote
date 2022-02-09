@@ -1,0 +1,71 @@
+.. currentmodule:: arduinouartremote
+.. _arduinouartremote:
+
+######################
+UartRemote for Arduino
+######################
+
+This library is from a protocol point of view compatible with the MicroPython UartRemote library. It can be used in any Arduino project by adding this whole directory to the Arduino library directory. After importing the `UartRemote` library, an example can be selected form the examples in the Arduino IDE.
+
+Differences compared to MicroPython implementation
+--------------------------------------------------
+
+Because C++ lacks the possibility to generate a function call with a variable number of parameters, a conversion function `unpack` was introduced. 
+
+A typical definition of a user defined function that will be called upon receiving a command with its accompanying parameters is shown below:
+
+```python
+.. c::
+  void led(unpackresult& args) {
+   int a,b,c;  float d,e,f,g;
+   uartremote.getvariables(args,&a,&b,&c,&d,&e,&f,&g);
+
+   printf("%d %d %d %f\n",a,b,c,d);
+   uartremote.send("ledack","b",0);
+}
+
+
+Here, the user function takes always the parameters as `unpackresult&`. The function `getvariables` assigns the parsed values to the respective variables. In the remainder of the fucntion definition, these assigned variables can be used.
+
+The user defined function must always return an acknowledgement. In this case a summy variable of type `byte` is returned.
+
+The following example shows how to return one or more values back.
+
+```python
+void tst(unpackresult& args) {
+   float a,b;
+   uartremote.getvariables(args,&a,&b);
+   
+   float c=a+b;
+ 
+   uartremote.send("tstack","f",c);
+}
+```
+
+API
+---
+
+.. c:member:: Arguments UartRemote::receive(char* cmd);
+
+.. c:member:: int UartRemote::available();
+
+.. c:member:: unsigned char UartRemote::readserial1();
+
+.. c:member:: void UartRemote::flush();
+
+.. c:member:: Arguments UartRemote::pack( unsigned char* buf, const char* format, ...);
+
+.. c:member:: void UartRemote::command(const char* cmd,Arguments rcvunpack);
+
+.. c:member:: void UartRemote::send(const char* cmd, const char* format, ...) ;
+
+.. c:member:: void UartRemote::testsend(const char* cmd,unsigned char* buf, const char* format, ...);
+    
+
+.. c:member:: Arguments UartRemote::receive(char* cmd);
+.. c:member:: Arguments UartRemote::testreceive(char* cmd, unsigned char* buf);
+    
+.. c:member:: void UartRemote::add_command(const char * cmd,  void (*func)(Arguments) );
+
+
+Because this library is written in pure C++, it is faster by a factor of approximately 100 compared to the MicroPython implementation.

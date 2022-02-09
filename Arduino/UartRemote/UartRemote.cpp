@@ -1,269 +1,25 @@
-#include "UartRemote.h"
+ #include "UartRemote.h"
 
 
-UartRemote::UartRemote() {}
+UartRemote::UartRemote() {
+  // to do: make dynamic deficition for rx and tx pins
+  UART.begin(115200, SERIAL_8N1, RXD1, TXD1);
+}
 
 
 
-void UartRemote::add_command(char* cmd, void (*func)(unpackresult&)){
+void UartRemote::add_command(const char* cmd, void (*func)(Arguments)){
   cmds[nr_cmds].cmd=cmd;
   cmds[nr_cmds].function=func;
   nr_cmds++;
 }
 
-void UartRemote::getvariables(unpackresult& args,  ...) {
-    va_list list;
-    va_start(list,args.size);
-    for(int i=0;i<args.size;++i) {
-        auto& v = args.vars[i];
-        if(v.size>=1) {
-            switch (args.vars[i].data_type) {
-                case t_byte:
-                    memcpy(va_arg(list, char*),v.data, v.size);
-                    break;
-                case t_int:
-                    memcpy(va_arg(list, int*),v.data, v.size*4);
-                    break;
-                case t_float:
-                    memcpy(va_arg(list, float*),v.data, v.size*4);
-                    break;
-                default:
-                break;
-            }
-        } else {
-            switch (v.data_type) {
-                case t_byte:
-                    *va_arg(list, char*) = *(char*)v.data;
-                    break;
-                case t_int:
-                    *va_arg(list, int*) = *(int*)v.data;
-                    break;
-                case t_float:
-                    *va_arg(list, float*) = *(float*)v.data;
-                    break;
-                default:
-                break;
-            }
-        }
-    }
-}
 
-
-void UartRemote::parseformat(const char* format, int& count, int& totalsize) {
-    for(int j=0;format[j]!=0;j++) {
-        bool isarray = false;
-        if(format[j]== 'a') {
-            ++j;
-            isarray = true;
-        }
-        int amount = 0;
-        while(format[j]<='9' and format[j]>='0') {
-            amount = amount*10+(format[j++]-'0');
-        }
-        if(amount==0) amount=1;
-        if(isarray) {
-            count++;
-        } 
-        while(amount--) {
-            switch (format[j]) {
-                case 'b':
-                    totalsize++;
-                    break;
-                case 'B':
-                    totalsize++;
-                    break;
-                case 'i':
-                    totalsize+=4;
-                    break;
-                case 'I':
-                    totalsize+=4;
-                    break;
-                case 'f':
-                    totalsize+=4;
-                    break;
-                default:
-                    break;
-            }
-            count+=!isarray;
-        }
-    }
-    // printf("parseformat count=%d totalsize=%d\n",count,totalsize);
-}
-
-
-
-unpackresult UartRemote::unpack(const char* format, const char* data) {
-    int totalsize=0,count=0;
-    parseformat(format,count,totalsize);
-    variable* variables = new variable[count+1];
-
-    char* cpydata = new char[totalsize];
-    memcpy(cpydata,data,totalsize);
-
-    int variableid=0;
-    totalsize=0;
-    for(int j=0;format[j]!=0;j++) {
-        bool isarray = false;
-        if(format[j]== 'a') {
-            ++j;
-            isarray = true;
-        }
-        int amount = 0;
-        while(format[j]<='9' and format[j]>='0') {
-            amount = amount*10+(format[j++]-'0');
-        }
-        if(amount==0) amount=1;
-       
-        if(isarray) {
-            int cursize=-1;
-            switch (format[j]) {
-                case 'b':
-                case 'B':
-                    cursize= amount;
-                    break;
-                case 'i':
-                case 'I':
-                case 'f':
-                    cursize=4*amount;
-                    break;
-                default:
-                    break;
-            }
-            auto& v = variables[variableid];
-            v.data = (void*)(data+totalsize);
-            v.size = amount;
-            switch(format[j]) {
-                case 'b':
-                case 'B':
-                    v.data_type = t_byte;
-                    break;
-                case 'i':
-                case 'I':
-                    v.data_type = t_int;
-                    break;
-                case 'f':
-                    v.data_type = t_float;
-                    break;
-                default:
-                    break;
-            }
-
-            totalsize+=cursize;
-            variableid++;
-        } else while(amount--) {
-            auto& v = variables[variableid];
-            v.data = (void*)(cpydata+totalsize);
-            v.size=0;
-            switch (format[j]) {
-                case 'b':
-                case 'B':
-                    v.data_type = t_byte;
-                    totalsize++;
-                    break;
-                case 'i':
-                case 'I':
-                    v.data_type = t_int;
-                    totalsize+=4;
-                    break;
-                case 'f':
-                    v.data_type = t_float;
-                    totalsize+=4;
-                    break;
-                default:
-                    break;
-            }
-            variableid++;
-        }
-    }
-    variables[count].data = (void*)cpydata;
-    return {variables,count};
-    
-}
-
-packresult UartRemote::vpack(const char* format, va_list list) {
-    // printf("format string: %s \n",format);
-    int count=0, totalsize=0;
-    parseformat(format,count,totalsize);
-    // printf("count = %d, totalsize = %d", count,totalsize);
-    char* ans = new char[totalsize];
-
-    totalsize=0;
-    for(int j=0;format[j]!=0;j++) {
-        bool isarray = false;
-        if(format[j]== 'a') {
-            ++j;
-            isarray = true;
-        }
-        int amount = 0;
-        while(format[j]<='9' and format[j]>='0') {
-            amount = amount*10+(format[j++]-'0');
-        }
-        if(amount==0) amount=1;
-       
-        if(isarray) {
-            int cursize=-1;
-            switch (format[j]) {
-                case 'b':
-                case 'B':
-                    cursize= amount;
-                    break;
-                case 'i':
-                case 'I':
-                case 'f':
-                    cursize=4*amount;
-                    break;
-                default:
-                    break;
-            }
-            memcpy(ans+totalsize, va_arg(list,void*), cursize);
-            totalsize+=cursize;
-        } else while(amount--) {
-            switch (format[j]) {
-                case 'b':
-                    ans[totalsize] = (char)va_arg(list, int);
-                    totalsize++;
-                    break;
-                case 'B':
-                    ans[totalsize] = (unsigned char)va_arg(list, int);
-                    totalsize++;
-                    break;
-                case 'i':
-                    *(int*)(ans+totalsize) = va_arg(list, int);
-                    totalsize+=4;
-                    break;
-                case 'I':
-                    *(unsigned int*)(ans+totalsize) = va_arg(list, unsigned int);
-                    totalsize+=4;
-                    break;
-                case 'f':
-                    *(float*)(ans+totalsize) = (float)va_arg(list, double);
-                    totalsize+=4;
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-//     for (int i; i<totalsize; i++) { printf("%02x ",ans[i]);}
-//     printf("\n");
-    packresult result = {ans,totalsize};
-    return result;
-
-}
-
-packresult UartRemote::pack(const char* format, ...) {
-  va_list list;
-  va_start(list,format);
-  auto result = vpack(format,list);
-  va_end(list);
-  return result;
-}
-
-void UartRemote::command(char cmd[],unpackresult& rcvunpack) {
+void UartRemote::command(const char* cmd,Arguments args) {
   for (int i=0; i<nr_cmds; i++) {
      //printf("checking cmd %s\n",cmds[i].cmd);
      if (strcmp(cmd,cmds[i].cmd)==0) {
-         (*cmds[i].function)(rcvunpack);
+         (*cmds[i].function)(args);
      }
   }
  // printf("return from UartRemote::command\n");
@@ -271,6 +27,7 @@ void UartRemote::command(char cmd[],unpackresult& rcvunpack) {
 
 unsigned char UartRemote::readserial1() {
   while (UART.available()==0) {
+    delay(10);
   }
   return UART.read();
 }
@@ -292,16 +49,32 @@ void UartRemote::flush() {
     }
 }
 
-void UartRemote::send(const char* cmd, const char* format, ... ) {
+void uartwrite(char c){
+    Serial.print(c,HEX);
+    Serial.print(' ');
+}
 
-  va_list list;
-  va_start(list, format);
-  auto p=vpack(format, list);
-  va_end(list);    
-    
+Arguments UartRemote::pack( unsigned char* buf, const char* format, ...) {
+  va_list args;
+  va_start(args,format);
+  int res = pack_va_list(buf,0,format,args);  
+  va_end(args);
+  Arguments a = {buf,format,res};
+
+  return a;
+}
+
+
+
+void UartRemote::send_command(const char* cmd, const char* format, ...) {
+  va_list args;
+  va_start(args,format);
+  pack_va_list((unsigned char*)data_buf,0,format,args);  
+  va_end(args);
+  int size = struct_calcsize(format);
   unsigned char lc = strlen(cmd);
   unsigned char lf = strlen(format);
-  unsigned char l=lc+lf+p.size+2; // +2 for the length fields of cmd and format
+  unsigned char l=lc+lf+size+2; // +2 for the length fields of cmd and format
   int i;
   UART.write('<');
   UART.write(l);
@@ -310,45 +83,150 @@ void UartRemote::send(const char* cmd, const char* format, ... ) {
   UART.write(lf);
   for (i=0; i<lf; i++) UART.write(format[i]);
   //printf("p.size= %d\n",p.size);
-  for (i=0; i<p.size; i++) UART.write(p.data[i]);
+  for (i=0; i<size; i++) UART.write((unsigned char)data_buf[i]);
   UART.write('>');
 }
 
-unpackresult UartRemote::receive(char* cmd) {
+void UartRemote::testsend(const char* cmd, unsigned char* buf,const char* format, ...) {
+  int pt=0;
+  va_list args;
+  va_start(args,format);
+  pack_va_list((unsigned char*)data_buf,0,format,args);  
+  va_end(args);
+  int size = struct_calcsize(format);
+  unsigned char lc = strlen(cmd);
+  unsigned char lf = strlen(format);
+  unsigned char l=lc+lf+size+2; // +2 for the length fields of cmd and format
+  int i;
+  buf[pt++]='<';
+  buf[pt++]=l;
+  buf[pt++]=lc;
+  for (i=0; i<lc; i++) buf[pt++]=cmd[i];
+  buf[pt++]=lf;
+  for (i=0; i<lf; i++) buf[pt++]=format[i];
+  for (i=0; i<size; i++) buf[pt++]=(unsigned char)data_buf[i];
+  buf[pt++]='>';
+}
+
+Arguments UartRemote::receive_command(char* cmd) {
+  int error = 0;
   char delim=readserial1();
+  if (delim!='<') {
+    error =1;
+  } else {
+    unsigned char l =readserial1();
+    unsigned char lc = readserial1();
+
+    for (int i=0; i<lc; i++) {
+      cmd[i]=readserial1();
+    }
+    cmd[lc]=0;
+    unsigned char lf = readserial1();
+    for (int i=0; i<lf; i++) {
+      format[i]=readserial1();
+    }
+    format[lf]=0;
+    int l_data=l-2-lc-lf;
+    for (int i=0; i<l_data; i++) {
+      data_buf[i]=readserial1();
+    }
+    delim=readserial1();
+    if (delim!='>') {
+        error = 1;
+    }
+  }
+  Arguments a;
+  if (error==1) {
+    a={data_buf,"",1};
+    flush();
+  } else {
+    a = {data_buf, format, 0}; // 0 = no error
+  }
+  return a;
+}
+
+Arguments UartRemote::call(const char* cmd, const char* format, ...) {
+  char cmd_ack[30],cmd_check[30];
+  va_list args;
+  va_start(args,format);
+  pack_va_list((unsigned char*)data_buf,0,format,args);  
+  va_end(args);
+  int size = struct_calcsize(format);
+  unsigned char lc = strlen(cmd);
+  unsigned char lf = strlen(format);
+  unsigned char l=lc+lf+size+2; // +2 for the length fields of cmd and format
+  int i;
+  UART.write('<');
+  UART.write(l);
+  UART.write(lc);
+  for (i=0; i<lc; i++) UART.write(cmd[i]);
+  UART.write(lf);
+  for (i=0; i<lf; i++) UART.write(format[i]);
+  for (i=0; i<size; i++) UART.write((unsigned char)data_buf[i]);
+  UART.write('>');
+
+ 
+  // flush();
+  Arguments recv=receive_command(cmd_ack);
+  if (recv.error==0) {
+    strcpy(cmd_check,cmd); // copy command
+    strcat(cmd_check,"ack"); // concatenate ack
+    if (strcmp(cmd_ack,cmd_check)!=0) {
+      flush();
+      recv.error=1;
+    }
+  }
+  if (recv.error==1) flush(); // remove remaining bytes from uart recv buffer
+return recv;
+}
+
+int UartRemote::receive_execute() {
+  // return 0 on success
+  char cmd_recv[30];
+  Arguments args = receive_command(cmd_recv);
+  if (args.error ==0) {
+    command(cmd_recv,args);
+    return 0;
+  } else {
+    return 1;
+    flush();
+  }
+}
+
+Arguments UartRemote::testreceive(char* cmd, unsigned char* buf) {
+  int pt=0;
+  char delim=buf[pt++];
   if (delim!='<') {
     strcpy(cmd,"error");
     flush();
-    send("error","b",'!');
-    return unpack("b","!");
+    send_command("error","b",'!');
+    return pack((unsigned char*)data_buf,"b","!");
   }
-  //printf("left delim %d   %d!=60: %d\n",delim,delim,delim!=60);
-  unsigned char l =readserial1();
-  unsigned char lc = readserial1();
-
+  unsigned char l =buf[pt++];
+  unsigned char lc = buf[pt++];
   for (int i=0; i<lc; i++) {
-    cmd[i]=readserial1();
+    cmd[i]=buf[pt++];
   }
   cmd[lc]=0;
-  unsigned char lf = readserial1();
+  unsigned char lf = buf[pt++];
   for (int i=0; i<lf; i++) {
-    format[i]=readserial1();
+    format[i]=buf[pt++];
   }
   format[lf]=0;
   int l_data=l-2-lc-lf;
   for (int i=0; i<l_data; i++) {
-    data_buf[i]=readserial1();
+    data_buf[i]=buf[pt++];
   }
-  delim=readserial1();
+  delim=buf[pt++];
   //printf("right delim %c\n",delim);
   if (delim!='>') {
       strcpy(cmd,"error");
       flush();
-      send("error","b",'!');
-      return unpack("b","!"); 
+      send_command("error","b",'!');
+      return pack((unsigned char*)data_buf,"b","!"); 
   }
-  return unpack(format,data_buf);
+  Arguments a = {data_buf, format,0};
+  return a;
 }
-
 
  

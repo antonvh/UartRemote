@@ -34,7 +34,7 @@ The SPIKE IDE checks the filesystem of the Spike Prime. If it sees any non-syste
 Installation of uartremote.py or uartremote.mpy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Open a new Python project in the LEGO Education SPIKE Prime IDE and paste in the content of the file `install_uartremote.py <https://github.com/antonvh/UartRemote/blob/master/MicroPython/SPIKE/install_uartremote.py>`. This script is automaically build using a GitHub Action and is committed to the ``MicroPython/SPIKE`` director of the github repository. Execute the script. Open the console in the IDE. After executing it should show:
+Open a new Python project in the LEGO Education SPIKE Prime IDE and paste in the content of the file `install_uartremote.py <https://github.com/antonvh/UartRemote/blob/master/MicroPython/SPIKE/install_uartremote.py>`_. This script is automaically build using a GitHub Action and is committed to the ``MicroPython/SPIKE`` director of the github repository. Execute the script. Open the console in the IDE. After executing it should show:
 
 ::
 
@@ -51,8 +51,8 @@ To use the library include the following line in your python code::
 Creating the install file
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you have the `mpy-cross` cross compile tool installed, just do this in the SPIKE directory:
-`./create_install_file.py`
+If you have the ``mpy-cross`` cross compile tool installed, just do this in the SPIKE directory:
+``./create_install_file.py``
 
 Errors while installing uartremote library
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
