@@ -165,7 +165,8 @@ class UartRemote:
 
     def echo(self, *s):
         if self.DEBUG: print(s)
-        return s
+        ack,string=self.call('echo','B',s)
+        return ack
 
     @staticmethod
     def raw_echo(s):
