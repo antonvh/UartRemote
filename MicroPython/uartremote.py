@@ -562,7 +562,7 @@ class UartRemote:
 
     def get_remote_commands(self):
         cmds=[]
-        ack,n_cmds=self.call('get_num_commands')
+        n_cmds=self.call('get_num_commands')
         for i in range(n_cmds):
             ack,cmd=self.call('get_nth_command','B',i)
             cmds.append(cmd)
