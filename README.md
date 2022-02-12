@@ -8,15 +8,16 @@ We are in the process of moving all the documentation to [UartRemote.readthedocs
 
 # Remote UART library: uartremote.py
 
-This is a library for robust, near real-time communication between two UART devices. We developed it on python 3.9 with LEGO EV3, SPIKE Prime and other MicroPython (ESP/STM32) modules. The library has the following properties:
-- It is fast enough to read sensor data at 30-50Hz.
+This is a library for robust, near real-time communication between two UART devices. We developed it on python 3.9 with LEGO EV3, SPIKE Prime and other MicroPython (ESP/STM32) modules using our [LEGO Breakout](https://github.com/antonvh/LMS-uart-esp/wiki) Wifi boards. The library has the following properties:
+
+- It is fast enough to read sensor data at 30-50Hz. (see the aduino library if higer performace of C is needed)
 - It is fully symmetrical, so master and slave can have the same import.
 - It includes a RAW REPL mode to upload code to a slave module. This means you can develop code for both modules in one file.
 - It is implemented in MicroPython and Arduino/C code. With arduino code, much higher sensor reading speeds are possible, but flashing is a bit less user friendly.
 - The library has a command loop to wait and listen for calls. That loop is customizable and non-blocking so you can add your own code to it.
 - The C-struct-like encoding is included in the payload, so the other side always knows how to decode it.
 - Compatable with most RS232-TTL 3.3v/5v converter board to further expand i/o possibilities.
--remote modiule importing
+- Remote modiule importing
 
 Usage: you can use all of parts of this library for your own projects. Please give us credits at least. We put a lot spare time in this. You are also welcome to contribute. Please fork and PR.
 
@@ -31,17 +32,19 @@ The same UartRemote library is also implemented for [Arduino](https://github.com
 
 ## Micropython
 
-Uniform library that works on standard MicroPython platforms, including the EV3 and the Spike. See further platforms in the [microPython](MicroPython/README.md) directory.
+Uniform library that works on standard MicroPython platforms, including the EV3 and the Spike. See further platforms in the [microPython](MicroPython/README.md) directory and in the [LEGO Breakout Wiki](https://github.com/antonvh/LMS-uart-esp/wiki)
 
 ## ESP32
 
-remote module loading via REPL [details here](/ibraries/UartRemote/MicroPython/ESP32/README.md)
+remote module loading via REPL [details here](/ibraries/UartRemote/MicroPython/ESP32/README.md) and here [here](https://uartremote.readthedocs.io/en/latest/examples.html)
 
 ## STM32(SPIKE Prime and Robot Inventor 51515)
 Copy the [installer script](Libraries/UartRemote/MicroPython/SPIKE/install_uartremote.py) in an empty project inside the LEGO app and run the script once. You can discard the script afterwards. Alternativly you can use rshell, below. files in the /projects folder are not removed.
 
-## ESP8266 with rshell
-on ESP82 Copy the [ESP8266 library](Libraries/UartRemote/MicroPython/ESP8266) to the board with webREPL or rshell>
+## ESP8266 with rshell or webshell
+remote load modules with examples [here](https://uartremote.readthedocs.io/en/latest/examples.html)
+on ESP32 Copy the [ESP8266 library](Libraries/UartRemote/MicroPython/ESP8266) to the board with (webREPL)[https://github.com/antonvh/LMS-uart-esp/wiki/Connecting-via-webrepl] or rshell>
+
 
 Copy the plain .py file or the compiled library .mpy into your device
 - You can get rshell via: `pip3 install rshell`
@@ -57,7 +60,7 @@ You can edit /pyboard/boot.py while you're at it, to configure your [wifi connec
 
 # Use Cases / Examples
 
-For more examples see [example_scripts.py](example_scripts.py) and further demo and example scripts in the platform directories.
+For more examples see [example_scripts.py](example_scripts.py) and further demo and example scripts in the platform directories. also the new documents wiki [here](https://uartremote.readthedocs.io/en/latest/examples.html)
 
 ## Communication Master/Slave Robot  - LEGO(STM32) & micropythonESP8266
 

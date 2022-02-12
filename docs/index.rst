@@ -11,7 +11,8 @@ The library has the following properties:
 * It is implemented in MicroPython and Arduino/C code. With arduino code, much higher sensor reading speeds are possible, but flashing is a bit less user friendly.
 * The library has a command loop to wait and listen for calls. That loop is customizable and non-blocking so you can add your own code to it.
 * The python-struct-like encoding is included in the payload, so the other side always knows how to decode it.
-* Compatable with most RS232-TTL 3.3v/5v converter board to further expand i/o possibilities. -remote modiule importing
+* Compatable with most RS232-TTL 3.3v/5v converter board to further expand i/o possibilities. 
+* Remote modiule importing
 
 Usage: you can use all of parts of this library for your own projects. Please give us credits at least. We put a lot spare time in this. You are also welcome to contribute. Please fork and PR.
 
