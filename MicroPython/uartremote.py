@@ -562,8 +562,13 @@ class UartRemote:
 
     def get_remote_commands(self):
         cmds=[]
-        n_cmds=self.call('get_num_commands')
-        for i in range(n_cmds):
-            ack,cmd=self.call('get_nth_command','B',i)
-            cmds.append(cmd)
+        ack,n_cmds=self.call('get_num_commands')
+        try:
+            for i in range(n_cmds):
+                ack,cmd=self.call('get_nth_command','B',i)
+                cmds.append(cmd)
+        except:
+            if self.DEBUG:print('reload or no connection')
+        
         return cmds
+
