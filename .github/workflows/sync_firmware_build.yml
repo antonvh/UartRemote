@@ -1,0 +1,28 @@
+name: sync esp32 firmware
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+
+jobs:
+  get_new_firmware:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: git clone https://github.com/ste7anste7an/micropython_ulab_lvgl
+      run: git clone https://github.com/ste7anste7an/micropython_ulab_lvgl
+    - name: copy build firmware
+      run: |
+        cp micropython_ulab_lvgl/build/firmware*.bin MicroPython/ESP32/
+        git config --global user.name 'Ste7an'
+        git config --global user.email 'ste7anste7an@users.noreply.github.com'
+        git add Micropython/ESP32
+        git diff --exit-code || git commit -m "Synced with latest build from github.com/ste7anste7an/micropython_ulab_lvgl/build"
+        git push
+    
