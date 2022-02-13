@@ -44,7 +44,7 @@ Furthermore, on the ESP32 we have the following code saved as the module ``test.
 
   def collect_data():
     # code for pulling tuple
-    return [('ABC'),('ABC',123)]
+    return [('ABC',123),('ABC',123.456)]
 
   def add_commands(ur): # call for adding the functions in this module to UartRemote commands
     ur.add_command(led) # does not return any value
@@ -81,7 +81,7 @@ Running this program gives the following output:
 >>> before ['enable repl', 'disable repl', 'echo', 'raw echo', 'module', 'get_num_commands', 'get_nth_command']
 >>> new commands: ['read_temp', 'led']
 >>> read_temp 37
->>> collect_data [('ABC'),('ABC',123)]
+>>> collect_data [('ABC, 123'),('ABC',123.456)]
 
 and on the ESP32 we see:
 
