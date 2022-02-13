@@ -1,17 +1,16 @@
+# Custom firmware deployent for AMH-ESP-LEGO-UART
 import argparse
 from time import sleep
 import serial
 from esptool import *
 
-parser = argparse.ArgumentParser(description="Micropython flash/configuration tool for ESP8266")
+parser = argparse.ArgumentParser(description="Micropython flash/configuration tool for AMH ESP8266")
 parser.add_argument("--port","-p",help="Serial port e.g. COM3, /dev/ttyUSB0, etc.")
 parser.add_argument("--detect-port","-d",help="Show detected port",action="store_true")
 parser.add_argument("--flash","-f",metavar='<micropython.bin>',help="Erase flash and write binary file <micropython.bin> to esp device.")
 parser.add_argument("--webrepl",metavar="<password>",help="Configure webrepl using password <password>")
 parser.add_argument("--wifi",metavar='<ssid>,<pasword>',help="Configure wifi connection <ssids> and password <password>")
 parser.add_argument("--getip","-i",help="show IP address for AP and STA mode",action="store_true")
-
-
 
 args = parser.parse_args()
 

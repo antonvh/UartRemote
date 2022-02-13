@@ -3,7 +3,7 @@
 In this directory you find the latest version of uartremote compiled for ESP8266.
 
 ## esp_flash_config.py tool
-We wrote a wrapper around esptool.py and some functions for easily flashing new firmware on the ESP8266 and for configuring the settings of webrepl and wifi.
+We wrote a wrapper around esptool.py and some functions for easily flashing new firmware on the ESP8266 and for configuring the settings of webrepl and wifi. see more here [OTA flashing](OTA/README.md)
 
 ```
 python3 esp_flash_config.py -h
@@ -25,7 +25,7 @@ optional arguments:
 
 ```
 
-This tool is tested on linux, mac-osx and windows. For using the tool, you need to connect an FTDI-232 serial usb converter to the ESP8266 module. You can read in the Wiki how that can be done. 
+This tool is tested on linux, mac-osx and windows. For using the tool, you need to connect an FTDI-232 serial usb converter to the ESP8266 module. You can read in the [Wiki](https://github.com/antonvh/LMS-uart-esp/wiki/Flashing-esp-i2c-board#ftdi-cable-and-macwindowslinux) how that can be done. 
 
 Each of the different OS-es will enumerate the usb serial port differently. To help you find out the specific name that is used on your system of the serial port used for  connecting with the ESP8266 module, you can use the `--detect-port` or `-d` option of the tool. 
 
@@ -53,14 +53,13 @@ Each of the different OS-es will enumerate the usb serial port differently. To h
 
 Note: if the `--port` option is ommitted in steps 3, 4, and 5, the tool will tyry to call step 1 first. A change from user to boot mode and back is then neccessary. The tool will indicate when to change mode.
 
-## Firmware `micropython_v1.16_uartremote.bin`
-We also compiled the Micropython firmware with the `uartremote` compiled as frozen module. The latest MicroPython version can be found i This has the advantage that the module uses far less RAM memory (1kb vs 4kb) as compared to loading the `uartremote.mpy` module from flash.
+## Firmware `micropython_xx_uartremote.bin`
+We also [compiled](https://github.com/antonvh/flash-esp) the Micropython firmware with the `uartremote` compiled as frozen module. The latest MicroPython version can be found i This has the advantage that the module uses far less RAM memory (1kb vs 4kb) as compared to loading the `uartremote.mpy` module from flash.
 
-All that is needed, is to copy the `uartremote.py` file in de `/ports/esp8266/modules` directory and build the firmware. The firmware `micropython-v1.16-uartremote.bin` is version MicroPython v1.16 and can be flashed on the ESP8266 board, as described above or in the Wiki.
+All that is needed, is to copy the `uartremote.py` file in the `/ports/esp8266/modules` directory and build the firmware. The firmware `micropython-v1.16-uartremote.bin` is version MicroPython v1.16 and can be flashed on the ESP8266 board, as described above or in the Wiki.
 
 ## Mpy library import.
 You can copy `uartremote.mpy` to the ESP8266 module using the WebREPL. This is the easiest way to install it. It will take about 4kb of memory.
 
 The file is the result of running this command in the LMS-uart-esp/Libraries/UartRemote/MicroPython/ESP8266 directory:
 `mpy-cross -march=xtensa ../uartremote.py -o uartremote.mpy`
-

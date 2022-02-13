@@ -42,19 +42,18 @@ Furthermore, on the ESP32 we have the following code saved as the module ``test.
     # now we only print the received data
     print(n,r,g,b)
 
-  def read_temp():
-    # code for reading a temperature sensor
-    import random
-    return random.randint(15,40)
+  def collect_data():
+    # code for pulling tuple
+    return [('ABC',123),('ABC',123.456)]
 
   def add_commands(ur): # call for adding the functions in this module to UartRemote commands
     ur.add_command(led) # does not return any value
-    ur.add_command(read_key,'i') # returns an integer
-
+    ur.add_command(read_temp,'i') # returns an integer
+    ur.add_command(collect_data,'repr') # returns string
 
 When the module above is imported, the function ``add_commands`` will add the two functions that are defined in this module to the current command set of UartRemote. Therefore, this function should be present in your modules that you want to remotely import.
 
-On the remote instance (e.g. the Lego robot, where the ESP32 is connected to port 'A'), we use the following code to remotely import the ``test`` module::
+On the master instance (e.g. the Lego robot, where the ESP32 is connected to port 'A'), we use the following code to remotely import the ``test`` module::
 
   # code running on remote instance
   from projects.uartremote import *
@@ -74,11 +73,15 @@ On the remote instance (e.g. the Lego robot, where the ESP32 is connected to por
   ack,val=ur.call('read_temp')
   print('read_temp',val)
 
+  ack,val=ur.call('collect_data')
+  print('collect_data',val)
+
 Running this program gives the following output:
 
 >>> before ['enable repl', 'disable repl', 'echo', 'raw echo', 'module', 'get_num_commands', 'get_nth_command']
 >>> new commands: ['read_temp', 'led']
 >>> read_temp 37
+>>> collect_data [('ABC, 123'),('ABC',123.456)]
 
 and on the ESP32 we see:
 
