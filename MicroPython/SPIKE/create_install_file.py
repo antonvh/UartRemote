@@ -15,9 +15,9 @@ gitCommand = gitCommand.split('\n', 1)[0]
 version = gitCommand.split(' ')[-1]
 
 LIB = '../uartremote.py'
-LIB2 = 'uartremote.py' # version tracked file created in working directory
-MPY_LIB = 'uartremote.mpy'
-INSTALLER = 'install_uartremote.py'
+LIB2 = '../SPIKE/uartremote.py' # version tracked file created in working directory
+MPY_LIB = '../SPIKE/uartremote.mpy'
+INSTALLER = '../SPIKE/install_uartremote.py'
 
 # create uartremote version tracked for distribution
 version_tracked=open(LIB,'r').read()
