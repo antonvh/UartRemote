@@ -8,11 +8,12 @@ import binascii, mpy_cross, time
 import hashlib
 
 # version control pulled from git commit short
-import re, subprocess
+import subprocess
 # uses native python to run OS command not windows tested
-gitCommand = str(subprocess.run(['git','show','--abbrev-commit'], stdout=subprocess.PIPE).stdout)
-gitCommand = gitCommand.split('\n', 1)[0]
-version = gitCommand.split(' ')[-1]
+gitString = subprocess.run(['git','show','--abbrev-commit'], stdout=subprocess.PIPE, universal_newlines = True,).stdout
+gitString = gitString.splitlines()
+gitVer = gitString[0].split(' ')
+version = gitVer[1]
 
 LIB = '../uartremote.py'
 LIB2 = '../SPIKE/uartremote.py' # version tracked file created in working directory
