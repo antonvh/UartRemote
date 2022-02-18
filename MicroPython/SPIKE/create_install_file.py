@@ -10,7 +10,7 @@ import hashlib
 # version control pulled from git commit short
 import subprocess
 # uses native python to run OS command not windows tested
-gitString = subprocess.run(['git','show','--abbrev-commit'], stdout=subprocess.PIPE, universal_newlines = True,)
+gitString = subprocess.run(['git','show','--abbrev-commit'], stdout=subprocess.PIPE, universal_newlines=True)
 gitString = gitString.stdout.splitlines()
 gitVer = gitString[0].split(' ')
 version = gitVer[1]
