@@ -10,10 +10,10 @@ import hashlib
 # version control pulled from git commit short
 import subprocess
 # uses native python to run OS command not windows tested
-gitString = subprocess.run(['git','show','--abbrev-commit'], stdout=subprocess.PIPE, universal_newlines=True)
-gitString = gitString.stdout.splitlines()
-gitVer = gitString[0].split(' ')
-version = gitVer[1]
+gitString = subprocess.check_output(['git','show','--abbrev-commit'])
+gitString = gitString.split(b'\n')
+gitVer = gitString[0].split(b' ')
+version = gitVer[1].decode("utf-8") 
 
 LIB = '../uartremote.py'
 LIB2 = '../SPIKE/uartremote.py' # version tracked file created in working directory
