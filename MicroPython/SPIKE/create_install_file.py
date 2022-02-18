@@ -29,10 +29,11 @@ version_code=f"""
 
 """
 version_tracked = version_tracked + version_code
+_=open(LIB,'r').close()
 print('Writing version tracked uartremote...')
 with open(LIB2,'w') as f:
     f.write(version_tracked)
-
+_=open(LIB2,'r').close()
 # use new copy with version and compile
 print('Running MPY cross compile of uartremote...')
 mpy_cross.run('-march=armv6',LIB2,'-o', MPY_LIB)
