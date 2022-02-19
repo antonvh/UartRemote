@@ -160,6 +160,7 @@ class UartRemote:
         self.add_command(self.module,name='module')
         self.add_command(self.get_num_commands,'repr',name='get_num_commands')
         self.add_command(self.get_nth_command,'repr',name='get_nth_command')
+        self.add_command(self.get_version,'repr',name='get_version')
         
         
 
@@ -572,3 +573,7 @@ class UartRemote:
         
         return cmds
 
+    def get_version(self):
+        version='2022021900' # version=<date>+<version>, with <date>=<YYYYMMDD> and <version>=00..99
+        if self.DEBUG:print(version)
+        return version
