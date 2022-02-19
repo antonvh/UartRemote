@@ -30,6 +30,8 @@ jobs:
       run: |
           git config --global user.name 'Ste7an'
           git config --global user.email 'ste7anste7an@users.noreply.github.com'
+          git pull
           git add .
-          git diff --exit-code || git commit -m "Updated SPIKE uartremote install script"
+          # git diff --exit-code || git commit -m "Updated SPIKE uartremote install script"
+          git commit -m "Updated SPIKE uartremote install script"
           git push
