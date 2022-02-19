@@ -24,9 +24,10 @@ INSTALLER = '../SPIKE/install_uartremote.py'
 version_tracked=open(LIB,'r').read()
 print('Building Installer for uartremote version:',version)
 version_code=f"""
-    def version(self):
+    def get_version(self):
         git_version='{version}'
         if self.DEBUG:print(git_version)
+        return git_version
 
 """
 version_tracked = version_tracked + version_code
