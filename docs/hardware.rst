@@ -99,3 +99,39 @@ We use the standard Grove connector that is used on many i2c sensors. M5Stack Un
 .. image:: ./images/schematic_lmsesp32_grove_i2c.jpg
   :width: 1000
   :alt: Grove i2c interface
+
+I2S Microphone
+--------------
+
+We provide two headers for connecting an INMP441 I2S microphone to the board. The esp-idf (Espressif IoT Development Framework) supports natevely the usage of I2S audio devices.
+
+.. image:: ./images/MEMS_microphone.jpg
+  :width: 1000
+  :alt:  INMP441 MEMS microphone
+
+The I2S connections use GPIO 27, 32 and 33 for word clock line (I2S_WS), the data line (I2S_SD) and the bit clock line (I2S_SCK). Note that this microphone is a PCM version.
+
+.. image:: ./images/schematic_lmsesp32_I2S_MIC.jpg
+  :width: 1000
+  :alt:  Schematic for the I2S microphone connection
+
+The solder pads on the back of the board can be used to select in which channel the digital output of the microphone is collected. By default the pad for selecting the left channel is shorted. Should you need to change the channel, than the trace between the MIC-L pads should be removed and the pads MIC-R should be shorted. Take care not to short both pads at the same time, as that leads to a power shortage.
+
+.. image:: ./images/select_LR_I2S.jpg
+  :width: 1000
+  :alt:  Solder pads for L/R signal of microphone
+
+Buck converter
+--------------
+
+We provide solder pads for a MP1584 buck converter. The buck converters input is connected to the M+ pin of the Lego robot’s motor interface. When seeting the Lego motor to 100% power, the M+ pin will provide 8V DC. The buck converter brings this voltage down to a well regulated 5V DC.
+
+.. image:: ./images/buck.jpg
+  :width: 1000
+  :alt: MP1584 buck converter with 5V output
+
+The following code can be executed on the SPIKE Prime or Robot Inventor hub. Here we use Port A to connect the LMS-ESP32::
+
+  import hub
+  # set motor power to +100%, resulting in 8V on M+ and 0V on M-
+  hub.port.A.pwm(100)
