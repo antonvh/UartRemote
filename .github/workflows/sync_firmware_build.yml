@@ -28,6 +28,6 @@ jobs:
         git add MicroPython/ESP32
         git status
         #git diff --exit-code || 
-        git commit -m "Synced with latest build"
+        git diff --exit-code || git commit -m "Synced with latest build"
         git push
     
