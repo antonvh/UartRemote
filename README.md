@@ -36,10 +36,10 @@ Uniform library that works on standard MicroPython platforms, including the EV3 
 
 ## ESP32
 
-remote module loading via REPL [details here](/ibraries/UartRemote/MicroPython/ESP32/README.md) and here [here](https://uartremote.readthedocs.io/en/latest/examples.html)
+remote module loading via REPL [details here](Libraries/UartRemote/MicroPython/ESP32/README.md) and here [here](https://uartremote.readthedocs.io/en/latest/examples.html)
 
 ## STM32(SPIKE Prime and Robot Inventor 51515)
-Copy the [installer script](Libraries/UartRemote/MicroPython/SPIKE/install_uartremote.py) in an empty project inside the LEGO app and run the script once. You can discard the script afterwards. Alternativly you can use rshell, below. files in the /projects folder are not removed.
+Copy the [installer script](blob/master/MicroPython/SPIKE/install_uartremote.py) in an empty project inside the LEGO app and run the script once. You can discard the script afterwards. Alternativly you can use rshell, below. files in the /projects folder are not removed.
 
 ## ESP8266 with rshell or webshell
 remote load modules with examples [here](https://uartremote.readthedocs.io/en/latest/examples.html)
