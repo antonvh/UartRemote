@@ -46,7 +46,7 @@ The timestanps will be different on your system and `<hash>` will show the sha-2
 
 To use the library include the following line in your python code::
 
-  from project.uartremote import *
+  from projects.uartremote import *
 
 Creating the install file
 ^^^^^^^^^^^^^^^^^^^^^^^^^
