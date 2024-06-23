@@ -101,7 +101,7 @@ class UartRemote:
     command_formats={}
     version="Nightly"
 
-    def __init__(self,port=0,baudrate=115200,timeout=1500,debug=False,rx_pin=18,tx_pin=19):
+    def __init__(self,port=0,baudrate=115200,timeout=1500,debug=False,rx_pin=None,tx_pin=None):
         # Baud rates of up to 230400 work. 115200 is the default for REPL.
         # Timeout is the time the lib waits in a receive_comand() after placing a call().
         self.local_repl_enabled = False
@@ -124,6 +124,22 @@ class UartRemote:
             # self.uart = UART(port,baudrate=baudrate,timeout=timeout,timeout_char=timeout,rxbuf=100)
         elif _platform==_ESP32:
             if not self.port: self.port = 1
+            try:
+                import lms_esp32
+                ESP32_V2 = (lms_esp32.version() == 2)
+            except:
+                import gc
+                ESP32_V2 = gc.mem_free() < 3000000
+            if rx_pin == None:
+                if ESP32_V2:
+                    rx_pin=8
+                else:
+                    rx_pin=18
+            if tx_pin == None:
+                if ESP32_V2:
+                    tx_pin=7
+                else:
+                    tx_pin=19
             # self.enable_repl_locally()
             self.uart = UART(self.port,baudrate=baudrate,rx=rx_pin,tx=tx_pin,timeout=1)
         elif _platform==_ESP32_S2:
@@ -574,6 +590,8 @@ class UartRemote:
         return cmds
 
     def get_version(self):
-        version='2022021900' # version=<date>+<version>, with <date>=<YYYYMMDD> and <version>=00..99
+        version='2024062300' # version=<date>+<version>, with <date>=<YYYYMMDD> and <version>=00..99
         if self.DEBUG:print(version)
         return version
+
+
