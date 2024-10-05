@@ -1,4 +1,14 @@
-# Install uartremote library on the SPIKE
+# Install uartremote library on SPIKE Legacy
+
+## IMPORTANT NOTICE
+Uartremote only works on SPIKE Legacy (2.0) or Robot Inventor firmware. If you have a yellow SPIKE hub, with SPIKE 3.0, I suggest one of these options:
+
+1. Use [Pupremote](https://github.com/antonvh/PUPRemote) + [Pybricks](https://code.pybricks.com). (Best)
+2. Flash Robot Inventor firmware with that LEGO app and keep using uartremote 
+3. Figure out how to emulate a lego sensor with LPF2 (part of of Pupremote) and keep using SPIKE 3.0 firmware. (very hard)
+
+I'm a bit frustrated that LEGO removed so many options in their 3.0 firmware, but I can't change that.
+
 ## Background
 The SPIKE IDE checks the filesystem of the Spike Prime. If it sees any non-system files in the root directory, it triggeres a firmware update. After the firmware update, the non-system files will be deleted. However, files that reside in the `/project`  will not be deleted after a firmware update.
 ## Installation of uartremote.py or uartremote.mpy
