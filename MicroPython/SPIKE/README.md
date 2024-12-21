@@ -1,4 +1,5 @@
-# Install uartremote library on SPIKE Legacy
+# Do not use this version of UartRemote: use [MPY-Robot installer](https://github.com/antonvh/mpy-robot-tools/blob/master/Installer/install_mpy_robot_tools.py)
+
 
 ## IMPORTANT NOTICE
 Uartremote only works on SPIKE Legacy (2.0) or Robot Inventor firmware. If you have a yellow SPIKE hub, with SPIKE 3.0, I suggest one of these options:
